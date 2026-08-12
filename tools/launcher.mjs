@@ -87,6 +87,22 @@ function resolvePnpm() {
   throw new Error('pnpm을 찾지 못했습니다. "npm install -g pnpm" 후 다시 실행해 주세요.');
 }
 
+/* ---------- .env 다루기 ---------- */
+/** key 의 값을 읽는다 — 줄이 없거나 값이 비어 있으면 null */
+function envValue(text, key) {
+  const m = text.match(new RegExp(`^\\s*${key}\\s*=\\s*(.*)$`, 'm'));
+  if (!m) return null;
+  const v = m[1].trim().replace(/^["']|["']$/g, '').trim();
+  return v.length > 0 ? v : null;
+}
+
+/** key 를 value 로 설정한다 — 줄이 있으면 교체, 없으면 맨 뒤에 추가 */
+function envSet(text, key, value) {
+  const line = `${key}="${value}"`;
+  const re = new RegExp(`^\\s*${key}\\s*=.*$`, 'm');
+  return re.test(text) ? text.replace(re, line) : `${text.replace(/\s*$/, '')}\n${line}\n`;
+}
+
 /* ---------- 자식 프로세스 ---------- */
 const children = new Map(); // name → { child, buffer[] }
 let streaming = false;
@@ -414,14 +430,28 @@ async function main() {
       });
     }
 
-    /* 2. 환경 파일 준비 */
+    /* 2. 환경 파일 준비 — 기준은 apps/api/.env.example 이다 */
     await step('환경 파일 확인 (.env)', async () => {
       const envPath = join(ROOT, 'apps', 'api', '.env');
-      if (existsSync(envPath)) return '있음';
-      let content = readFileSync(join(ROOT, '.env.example'), 'utf8');
-      content = content.replace('여기에-긴-랜덤-문자열', `sowl-admin-${randomBytes(20).toString('hex')}`);
-      writeFileSync(envPath, content);
-      return '생성 (ADMIN_TOKEN 랜덤 발급)';
+      const created = !existsSync(envPath);
+      let content = readFileSync(
+        created ? join(ROOT, 'apps', 'api', '.env.example') : envPath,
+        'utf8',
+      );
+
+      // 비어 있으면 API가 부팅에 실패하는 값들 (main.ts assertRequiredEnv).
+      // 이미 값이 있으면 절대 건드리지 않는다 — 예전 구동기가 만든 .env 도 여기서 구제된다.
+      const secrets = { JWT_ACCESS_SECRET: 48, DB_ACCESS_PASSPHRASE: 16, IP_HASH_SALT: 24 };
+      const filled = [];
+      for (const [key, bytes] of Object.entries(secrets)) {
+        if (envValue(content, key)) continue;
+        content = envSet(content, key, randomBytes(bytes).toString('hex'));
+        filled.push(key);
+      }
+      if (created || filled.length > 0) writeFileSync(envPath, content);
+
+      if (created) return `생성 (secret ${filled.length}개 랜덤 발급)`;
+      return filled.length > 0 ? `보완 (${filled.join(', ')})` : '있음';
     });
 
     /* 3. 공용 패키지 빌드 */
