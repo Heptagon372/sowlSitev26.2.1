@@ -1,5 +1,63 @@
 /* ---------- 소개 랜딩 홈 (설계도 ② §2) ---------- */
 
+/* ---------- 히어로 배경 영상 — 부엉이가 눈을 뜨고 디지털 세계로 ----------
+   층 순서: .owlbg(영상) → .bg-layer(글로우·그리드·스캔·노이즈) → .page(내용).
+   영상은 index 에만 있으므로 다른 페이지의 3D 부엉이와 부딪히지 않는다. */
+.owlbg {
+  --owlbg-fade: 1;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: var(--owlbg-fade);
+}
+/* 인트로와 루프를 같은 자리에 겹쳐 두고 교차 페이드로 넘긴다 */
+.owlbg__v {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  /* 첫 프레임이 준비되기 전의 깜빡임을 막는다 */
+  transition: opacity 1.2s ease;
+}
+.owlbg.is-ready .owlbg__v--intro {
+  opacity: 1;
+}
+/* 코딩 세계 도착 — 인트로를 걷고 무한 루프로 넘어간다 */
+.owlbg.is-looping .owlbg__v--intro {
+  opacity: 0;
+}
+.owlbg.is-looping .owlbg__v--loop {
+  opacity: 1;
+}
+
+/* 배경을 살려 두되 흰 글씨는 읽히게 — 가운데를 넓게 비우고 가장자리만 눌렀다 */
+.owlbg__scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 82% 68% at 50% 42%, transparent 48%, rgba(5, 6, 8, 0.58) 100%),
+    linear-gradient(
+      180deg,
+      rgba(5, 6, 8, 0.32) 0%,
+      rgba(5, 6, 8, 0) 30%,
+      rgba(5, 6, 8, 0.3) 72%,
+      var(--bg) 100%
+    );
+}
+
+/* 스크림을 얇게 한 만큼 글씨 자체로 대비를 만든다 */
+.hero__title,
+.hero__tag,
+.hero .cd,
+.hero__meta,
+.scroll-hint {
+  text-shadow: 0 2px 20px rgba(5, 6, 8, 0.9), 0 1px 5px rgba(5, 6, 8, 0.75);
+}
+
 .hero__btns {
   display: flex;
   gap: 14px;

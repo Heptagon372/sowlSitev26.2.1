@@ -3,9 +3,9 @@ import type { RecruitInfo } from '@sowl/shared';
 import { startCountdown } from '../components/countdown';
 import { mountFooter } from '../components/footer';
 import { mountNav } from '../components/nav';
+import { mountOwlBackground } from '../components/owlBackground';
 import { api } from '../lib/api';
 import { countUp } from '../lib/format';
-import { mountOwl } from '../three/mount';
 import { SITE } from '../config';
 
 const $ = (sel: string) => document.querySelector<HTMLElement>(sel);
@@ -141,7 +141,7 @@ async function main(): Promise<void> {
   mountFooter();
   reveal();
   tiltRoom();
-  void mountOwl('index'); // 홈에서 가장 크고 진하게 (scale 1.0 · opacity 0.75)
+  mountOwlBackground(); // 홈 배경은 3D 부엉이 대신 '눈 뜨는 부엉이' 영상이 맡는다
   void loadStats();
 
   let info: RecruitInfo | null = null;
