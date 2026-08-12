@@ -1,0 +1,303 @@
+/* ============================================================
+   관리자 영역 (/admin/*) — 3D·화려한 연출 없이 정보 밀도 위주
+   (mpanel·mtable·mbtn·mctl 등 공용 클래스는 member.css 재사용)
+   ============================================================ */
+
+.anav {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(5, 6, 8, 0.92);
+  backdrop-filter: blur(8px);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.anav__brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 14px;
+  flex-shrink: 0;
+}
+.anav__brand img {
+  width: 24px;
+  height: 24px;
+}
+.anav__brand b {
+  font-size: 13.5px;
+}
+.anav__brand .rolebadge {
+  margin-left: 2px;
+}
+.anav__tab {
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  padding: 7px 12px;
+  border-radius: 8px;
+}
+.anav__tab:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.05);
+}
+.anav__tab[aria-current='page'] {
+  color: var(--magenta-hi);
+  background: rgba(244, 114, 208, 0.09);
+}
+.anav__spacer {
+  flex: 1;
+}
+.anav__me {
+  flex-shrink: 0;
+  font-size: 12.5px;
+  color: var(--dim);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.anav__me button {
+  border: 1px solid var(--line-2);
+  background: none;
+  color: var(--muted);
+  border-radius: 7px;
+  padding: 5px 11px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.anav__me button:hover {
+  color: var(--text);
+}
+
+.amain {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+.ahead {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.ahead h1 {
+  font-size: 21px;
+}
+.ahead .hint {
+  font-size: 12.5px;
+  color: var(--dim);
+}
+.ahead .sp {
+  flex: 1;
+}
+
+/* elevated 배지 */
+.elev {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 3px 10px;
+  border: 1px solid rgba(163, 230, 53, 0.4);
+  color: var(--lime);
+  background: rgba(163, 230, 53, 0.07);
+}
+.elev.off {
+  border-color: rgba(255, 255, 255, 0.18);
+  color: var(--dim);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* ---------- 공용 모달 ---------- */
+.amodal {
+  position: fixed;
+  inset: 0;
+  z-index: 95;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 22px;
+}
+.amodal__scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 4, 6, 0.8);
+  backdrop-filter: blur(5px);
+}
+.amodal__card {
+  position: relative;
+  width: min(420px, 100%);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r);
+  background: #0a0d12;
+  padding: 24px;
+  box-shadow: 0 40px 100px -30px rgba(0, 0, 0, 0.9);
+}
+.amodal__card h3 {
+  font-size: 17px;
+  margin-bottom: 8px;
+}
+.amodal__card p {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin-bottom: 16px;
+  white-space: pre-line;
+}
+.amodal__btns {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+/* ---------- 서버랙 42U 도면 ---------- */
+.rackview {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+.rack42 {
+  border: 2px solid var(--line-2);
+  border-radius: 10px;
+  background: linear-gradient(180deg, #0b0e13, #07090d);
+  padding: 10px 8px;
+  position: relative;
+}
+.rack42__title {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--dim);
+  text-align: center;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 6px;
+}
+.rack42__grid {
+  position: relative;
+}
+.rack42__slot {
+  height: 20px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 8.5px;
+  color: rgba(255, 255, 255, 0.18);
+  padding-left: 4px;
+}
+.rack42__slot.drop {
+  background: rgba(34, 211, 238, 0.12);
+}
+.rackdev {
+  position: absolute;
+  left: 26px;
+  right: 4px;
+  border-radius: 5px;
+  border: 1px solid var(--line-2);
+  background: linear-gradient(180deg, #171c24, #10141a);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 8px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  cursor: grab;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.rackdev.sel {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.25);
+}
+.rackdev .led {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--lime);
+  box-shadow: 0 0 8px var(--lime);
+  animation: led-blink 2.2s infinite;
+}
+.rackdev .led.warn {
+  background: #fbbf24;
+  box-shadow: 0 0 8px #fbbf24;
+}
+.rackdev .led.off {
+  background: #4b5563;
+  box-shadow: none;
+  animation: none;
+}
+@keyframes led-blink {
+  0%, 92%, 100% { opacity: 1; }
+  95% { opacity: 0.35; }
+}
+.rackdev .u {
+  margin-left: auto;
+  color: var(--dim);
+  font-size: 9px;
+}
+@media (max-width: 860px) {
+  .rackview {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 로그 탭 */
+.atabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.atabs button {
+  border: 1px solid var(--line-2);
+  background: none;
+  color: var(--muted);
+  border-radius: 8px;
+  padding: 7px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.atabs button[aria-selected='true'] {
+  color: var(--magenta-hi);
+  border-color: rgba(244, 114, 208, 0.45);
+  background: rgba(244, 114, 208, 0.08);
+}
+
+/* DB 콘솔 결과 */
+.dbout {
+  font-family: var(--mono);
+  font-size: 12px;
+  overflow: auto;
+  max-height: 480px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+}
+.dbout table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.dbout th,
+.dbout td {
+  border: 1px solid var(--line);
+  padding: 5px 9px;
+  text-align: left;
+  white-space: nowrap;
+  max-width: 340px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dbout th {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--cyan-hi);
+  position: sticky;
+  top: 0;
+}

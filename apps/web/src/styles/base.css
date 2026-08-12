@@ -1,0 +1,248 @@
+/* ============================================================
+   리셋 + 타이포 + 배경 레이어
+   ============================================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 88px;
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img {
+  max-width: 100%;
+  display: block;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  font-weight: 800;
+}
+p {
+  margin: 0;
+}
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+.mono {
+  font-family: var(--mono);
+}
+.wrap {
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: 22px;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- 배경 레이어: 3D 캔버스 → 글로우 → 그리드 → 스캔라인 → 노이즈 → 콘텐츠 ---------- */
+#owl-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+}
+.bg-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.bg-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+}
+.bg-glow.a {
+  width: min(62vw, 760px);
+  aspect-ratio: 1;
+  background: rgba(34, 211, 238, 0.14);
+  top: -22vh;
+  left: -12vw;
+}
+.bg-glow.b {
+  width: min(56vw, 680px);
+  aspect-ratio: 1;
+  background: rgba(244, 114, 208, 0.11);
+  top: 38vh;
+  right: -16vw;
+}
+.bg-glow.c {
+  width: min(50vw, 600px);
+  aspect-ratio: 1;
+  background: rgba(167, 139, 250, 0.09);
+  bottom: -24vh;
+  left: 24vw;
+}
+.bg-grid {
+  position: absolute;
+  inset: -2px;
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 58px 58px;
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 20%, #000 20%, transparent 78%);
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 20%, #000 20%, transparent 78%);
+}
+.bg-scan {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 180px;
+  opacity: 0.5;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(34, 211, 238, 0.055) 45%,
+    rgba(255, 255, 255, 0.03) 50%,
+    transparent
+  );
+  animation: scan 11s linear infinite;
+}
+@keyframes scan {
+  0% {
+    top: -180px;
+  }
+  100% {
+    top: 100%;
+  }
+}
+.bg-noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.16;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+}
+/* WebGL 폴백 — 캔버스 대신 라디얼 그라디언트 */
+body.no-webgl .bg-layer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 45% at 50% 32%, rgba(34, 211, 238, 0.1), transparent 70%);
+}
+.page {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- 리빌 ---------- */
+.rv {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.rv.in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- 섹션 셸 ---------- */
+.sec {
+  padding: 96px 0;
+  position: relative;
+}
+.sec__head {
+  margin-bottom: 46px;
+}
+.sec__eyebrow {
+  display: block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 12px;
+}
+.sec__title {
+  font-size: clamp(2rem, 5.2vw, 3.1rem);
+  font-weight: 900;
+  letter-spacing: -0.045em;
+  background: linear-gradient(180deg, #fff, #8b98ab);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.sec__desc {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 15.5px;
+  max-width: 620px;
+}
+.center {
+  text-align: center;
+}
+.center .sec__desc {
+  margin-inline: auto;
+}
+
+@media (max-width: 760px) {
+  .sec {
+    padding: 70px 0;
+  }
+}
+
+/* ---------- 모션 최소화 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+  .rv {
+    opacity: 1;
+    transform: none;
+  }
+}

@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.env
+*.local
+.pgdata/
+apps/api/prisma/migrations/**/migration_lock.toml.bak
+.claude/settings.local.json
+.DS_Store
+Thumbs.db

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>회원가입 | SLEEPY OWL</title>
+<meta name="description" content="S.OWL 계정 만들기 — 누구나 가입할 수 있어요. 회원 공간은 부원 확인 후 열립니다." />
+<meta name="theme-color" content="#050608" />
+<link rel="icon" href="/favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<!-- 첫 페인트용 최소 스타일 — 나머지는 JS 모듈이 불러온다 (tools/gen-pages.mjs가 관리) -->
+<style data-critical>
+  :root{color-scheme:dark}
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:88px;-webkit-text-size-adjust:100%}
+  body{margin:0;background:#050608;color:#e8eef7;font-size:16px;line-height:1.6;
+    overflow-x:hidden;-webkit-font-smoothing:antialiased;
+    font-family:'Pretendard Variable',Pretendard,Inter,-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif}
+  img{max-width:100%;display:block}
+  a{color:inherit;text-decoration:none}
+  h1,h2,h3,h4{margin:0;line-height:1.12;letter-spacing:-.03em;font-weight:800}
+  p{margin:0}
+  ul{margin:0;padding:0;list-style:none}
+  .bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .page{position:relative;z-index:1}
+  .wrap{max-width:1180px;margin-inline:auto;padding-inline:22px}
+</style>
+<!-- gen:css 진짜 CSS — <link>는 렌더 블로킹이라 페이지 전환 FOUC가 없다 (tools/gen-pages.mjs가 관리) -->
+<link rel="stylesheet" href="/src/styles/tokens.css" />
+<link rel="stylesheet" href="/src/styles/base.css" />
+<link rel="stylesheet" href="/src/styles/components.css" />
+<link rel="stylesheet" href="/src/styles/pages/auth.css" />
+<!-- /gen:css -->
+</head>
+<body>
+
+<div class="bg-layer" aria-hidden="true">
+  <div class="bg-glow a"></div><div class="bg-glow b"></div><div class="bg-glow c"></div>
+  <div class="bg-grid"></div><div class="bg-scan"></div><div class="bg-noise"></div>
+</div>
+
+<div class="page">
+
+<div id="nav"></div>
+
+<main class="auth-main">
+  <div class="term auth-card">
+    <div class="term__bar">
+      <span class="term__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="term__path mono">~/sowl — signup.sh</span>
+      <span class="term__tag">NEW</span>
+    </div>
+    <div class="term__body">
+
+      <div class="auth-head">
+        <img src="/img/soul_logo.png" alt="" width="52" height="52" />
+        <h1>계정 만들기</h1>
+        <p>누구나 가입할 수 있어요. 가입 직후에는 <b>비회원</b>이고,<br />부원으로 확인되면 회원 공간이 열립니다.</p>
+      </div>
+
+      <div class="auth-error" id="err" role="alert"></div>
+
+      <form class="auth-form" id="form" novalidate>
+        <div class="field" data-f="name">
+          <label class="field__label" for="f-name"><span class="ar">&gt;</span> 이름 <span class="req" aria-hidden="true">*</span><span class="field__hint">실명, 2~10자</span></label>
+          <input class="ctl" id="f-name" name="name" type="text" placeholder="김부엉" autocomplete="name" required />
+          <p class="err">이름은 2~10자의 한글 또는 영문이어야 합니다.</p>
+        </div>
+
+        <div class="field" data-f="studentId">
+          <label class="field__label" for="f-sid"><span class="ar">&gt;</span> 아이디 = 학번 <span class="req" aria-hidden="true">*</span><span class="field__hint">입학년도 4자리 + 5자리</span></label>
+          <input class="ctl" id="f-sid" name="studentId" type="text" inputmode="numeric" maxlength="9" placeholder="202600000" autocomplete="username" required />
+          <p class="err">학번은 숫자 9자리(입학년도 4자리 + 5자리)여야 합니다.</p>
+        </div>
+
+        <div class="field" data-f="password">
+          <label class="field__label" for="f-pw"><span class="ar">&gt;</span> 비밀번호 <span class="req" aria-hidden="true">*</span></label>
+          <input class="ctl" id="f-pw" name="password" type="password" placeholder="8자 이상 + 특수문자 1자 이상" autocomplete="new-password" required />
+          <div class="pwchecks" aria-live="polite">
+            <span id="ckLen">8자 이상</span>
+            <span id="ckSp">특수문자 1개 이상</span>
+          </div>
+          <div class="pwmeter" aria-hidden="true">
+            <div class="pwmeter__track"><div class="pwmeter__bar" id="pwBar"></div></div>
+            <span class="pwmeter__label" id="pwLabel">-</span>
+          </div>
+          <p class="pwwarn" id="pwWarn">비밀번호에 학번이 들어 있어요. 권장하지 않습니다.</p>
+          <p class="err">비밀번호는 8자 이상이며 특수문자를 1자 이상 포함해야 합니다.</p>
+        </div>
+
+        <div class="field" data-f="passwordConfirm">
+          <label class="field__label" for="f-pw2"><span class="ar">&gt;</span> 비밀번호 확인 <span class="req" aria-hidden="true">*</span></label>
+          <input class="ctl" id="f-pw2" type="password" autocomplete="new-password" required />
+          <p class="err">비밀번호가 일치하지 않습니다.</p>
+        </div>
+
+        <div class="field" data-f="email">
+          <label class="field__label" for="f-email"><span class="ar">&gt;</span> 이메일<span class="field__hint">선택 · 비밀번호 재설정/알림용</span></label>
+          <input class="ctl" id="f-email" name="email" type="email" placeholder="owl@skhu.ac.kr" autocomplete="email" />
+          <p class="err">올바른 이메일 주소를 입력해 주세요.</p>
+        </div>
+
+        <div class="field" data-f="terms">
+          <label class="check">
+            <input type="checkbox" id="f-terms" required />
+            <span class="check__box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg></span>
+            <span class="check__txt">
+              <b>이용약관 및 개인정보 처리방침에 동의합니다.</b> <span class="req" style="color:var(--magenta)" aria-hidden="true">*</span>
+              <small>수집 항목: 이름·학번·이메일(선택) / 목적: 동아리 회원 관리 / 보유 기간: 탈퇴 또는 동아리 요청 시까지</small>
+            </span>
+          </label>
+          <p class="err">약관에 동의해 주세요.</p>
+        </div>
+
+        <button class="btn btn--primary" type="submit" id="submitBtn">
+          <span class="ring" aria-hidden="true"></span>
+          <span class="inner"><span class="label" id="submitLabel">가입하기</span></span>
+        </button>
+      </form>
+
+      <!-- 가입 완료 -->
+      <div class="auth-done" id="done" role="status" aria-live="polite">
+        <div class="done__mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg></div>
+        <h3 id="doneTitle">가입 완료!</h3>
+        <p id="doneMsg"></p>
+        <div class="mgate__btns" id="doneBtns"></div>
+      </div>
+
+      <p class="auth-alt" id="alt">이미 계정이 있나요? <a href="/login.html">로그인</a></p>
+    </div>
+  </div>
+</main>
+
+</div>
+
+<script type="module" src="/src/pages/signup.ts"></script>
+</body>
+</html>

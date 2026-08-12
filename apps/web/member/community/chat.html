@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>채팅 | S.OWL Members</title>
+<meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#050608" />
+<link rel="icon" href="/favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<!-- 첫 페인트용 최소 스타일 + 진짜 CSS <link> — 페이지 전환 FOUC 방지 -->
+<style>
+  :root{color-scheme:dark}
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;background:#050608;color:#e8eef7;-webkit-font-smoothing:antialiased;
+    font-family:'Pretendard Variable',Pretendard,Inter,-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif}
+  .sk{display:block;border-radius:6px;background:rgba(255,255,255,.07);animation:skp 1.3s ease-in-out infinite}
+  @keyframes skp{0%,100%{opacity:.45}50%{opacity:.9}}
+  @media (prefers-reduced-motion:reduce){.sk{animation:none}}
+  .mshell{display:flex;min-height:100svh}
+  .msb{width:232px;flex:0 0 232px;height:100svh;padding:18px 14px 24px;
+    border-right:1px solid rgba(255,255,255,.1);background:rgba(6,8,11,.85)}
+  .mmain{flex:1;min-width:0;display:flex;flex-direction:column}
+  .mtop{display:flex;align-items:center;gap:14px;padding:14px 26px;
+    border-bottom:1px solid rgba(255,255,255,.1)}
+  .mcontent{padding:26px;max-width:1060px;width:100%}
+  @media (max-width:900px){.msb{position:fixed;left:0;top:0;transform:translateX(-100%)}.mcontent{padding:18px 16px}}
+</style>
+<link rel="stylesheet" href="/src/styles/tokens.css" />
+<link rel="stylesheet" href="/src/styles/base.css" />
+<link rel="stylesheet" href="/src/styles/components.css" />
+<link rel="stylesheet" href="/src/styles/member.css" />
+<link rel="stylesheet" href="/src/styles/member-stage2.css" />
+<link rel="stylesheet" href="/src/styles/member-stage3.css" />
+</head>
+<body data-page="chat">
+
+<div class="mshell">
+  <aside class="msb" id="msidebar" aria-busy="true">
+    <span class="sk" style="height:30px;width:130px"></span>
+    <span class="sk" style="height:10px;width:44px;margin:22px 0 10px"></span>
+    <span class="sk" style="height:14px;width:150px;margin-bottom:8px"></span>
+    <span class="sk" style="height:14px;width:120px;margin-bottom:8px"></span>
+    <span class="sk" style="height:10px;width:44px;margin:22px 0 10px"></span>
+    <span class="sk" style="height:14px;width:160px;margin-bottom:8px"></span>
+    <span class="sk" style="height:14px;width:135px;margin-bottom:8px"></span>
+    <span class="sk" style="height:14px;width:150px"></span>
+  </aside>
+  <div class="mmain">
+    <header class="mtop" id="mtopbar" aria-busy="true">
+      <span class="sk" style="height:18px;width:150px"></span>
+    </header>
+    <main class="mcontent" id="mcontent" aria-busy="true">
+      <span class="sk" style="height:88px;width:100%;margin-bottom:18px"></span>
+      <span class="sk" style="height:220px;width:100%"></span>
+    </main>
+  </div>
+</div>
+
+<script type="module" src="/src/member/pages/chat.ts"></script>
+</body>
+</html>

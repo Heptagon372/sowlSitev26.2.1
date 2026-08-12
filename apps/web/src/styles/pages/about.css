@@ -1,0 +1,332 @@
+/* ---------- 소개 · 동아리방 · 인프라 ---------- */
+.about-hero {
+  padding: 150px 0 10px;
+}
+.about-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.22fr);
+  gap: 52px;
+  align-items: center;
+}
+.about-grid h2 {
+  font-size: clamp(1.9rem, 4.4vw, 2.7rem);
+  font-weight: 900;
+  letter-spacing: -0.045em;
+  color: #fff;
+  margin-bottom: 20px;
+}
+.about-grid h2 .m {
+  background: linear-gradient(94deg, var(--magenta), var(--violet));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.about-grid p {
+  color: var(--muted);
+  font-size: 15.5px;
+  margin-bottom: 14px;
+}
+.about-grid p.lead {
+  color: #fff;
+  font-weight: 600;
+  font-size: 16.5px;
+}
+
+/* 동아리방 카드 — 3D 틸트 + 글레어 */
+.room {
+  position: relative;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  border: 1px solid var(--line-2);
+  box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.9), 0 0 60px -30px rgba(163, 230, 53, 0.4);
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: transform 0.18s ease-out;
+}
+.room img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  opacity: 0.86;
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s;
+}
+.room:hover img {
+  transform: scale(1.045);
+  opacity: 1;
+}
+.room__glare {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at var(--gx, 50%) var(--gy, 50%),
+    rgba(255, 255, 255, 0.14),
+    transparent 55%
+  );
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.room:hover .room__glare {
+  opacity: 1;
+}
+.room__ov {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 38%, rgba(5, 6, 8, 0.93));
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 24px;
+  pointer-events: none;
+}
+.room__tag {
+  align-self: flex-start;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--lime);
+  border: 1px solid rgba(163, 230, 53, 0.4);
+  background: rgba(163, 230, 53, 0.1);
+  border-radius: 999px;
+  padding: 5px 11px;
+  margin-bottom: 12px;
+}
+.room__list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px 18px;
+}
+.room__list li {
+  font-size: 12.8px;
+  color: #c8d3e0;
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+.room__list li i {
+  color: var(--lime);
+  font-family: var(--mono);
+  font-style: normal;
+  font-size: 12px;
+}
+
+/* ---------- 인프라 자랑 ---------- */
+.infra__cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  align-items: stretch;
+}
+.infra__card {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  padding: 26px;
+  background: rgba(255, 255, 255, 0.028);
+  border: 1px solid var(--line);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.4s, box-shadow 0.4s;
+}
+.infra__card:hover {
+  transform: translateY(-6px);
+  border-color: color-mix(in srgb, var(--ic) 55%, transparent);
+  box-shadow: 0 30px 60px -35px color-mix(in srgb, var(--ic) 90%, transparent);
+}
+.infra__card .tag {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  color: var(--ic);
+}
+.infra__card h3 {
+  margin: 9px 0 12px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #fff;
+}
+.infra__card p {
+  font-size: 13.5px;
+  color: var(--muted);
+  line-height: 1.72;
+}
+.i1 {
+  --ic: var(--lime);
+}
+.i2 {
+  --ic: var(--cyan);
+}
+.i3 {
+  --ic: var(--magenta);
+}
+
+/* 랙 유닛(1U 슬롯) 시각 요소 */
+.rack {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+}
+.rack__frame {
+  width: min(440px, 100%);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r);
+  padding: 14px;
+  background: linear-gradient(180deg, rgba(12, 16, 23, 0.9), rgba(5, 6, 8, 0.95));
+  box-shadow: 0 40px 90px -50px rgba(0, 0, 0, 0.95);
+}
+.rack__title {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--faint);
+  text-align: center;
+  margin-bottom: 12px;
+}
+.ru {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 34px;
+  margin-bottom: 7px;
+  padding: 0 12px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid var(--line);
+}
+.ru:last-child {
+  margin-bottom: 0;
+}
+.ru .led {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--lime);
+  box-shadow: 0 0 8px var(--lime);
+  animation: led 2.4s ease-in-out infinite;
+}
+.ru .led.c {
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+  animation-delay: 0.7s;
+}
+.ru .led.m {
+  background: var(--magenta);
+  box-shadow: 0 0 8px var(--magenta);
+  animation-delay: 1.3s;
+}
+@keyframes led {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+.ru .name {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+.ru .u {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  color: var(--faint);
+  letter-spacing: 0.14em;
+}
+.ru .vents {
+  flex: 1;
+  height: 12px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.08) 0 3px,
+    transparent 3px 8px
+  );
+  border-radius: 3px;
+  margin-inline: 8px;
+}
+.infra__note {
+  margin-top: 16px;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--faint);
+}
+
+/* ---------- 연혁 타임라인 ---------- */
+.timeline {
+  max-width: 640px;
+  margin-inline: auto;
+  position: relative;
+  padding-left: 28px;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  background: linear-gradient(180deg, var(--cyan), var(--violet), var(--magenta));
+  opacity: 0.4;
+  border-radius: 2px;
+}
+.tl {
+  position: relative;
+  padding: 0 0 30px;
+}
+.tl:last-child {
+  padding-bottom: 0;
+}
+.tl::before {
+  content: '';
+  position: absolute;
+  left: -26px;
+  top: 7px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--cyan);
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.7);
+}
+.tl.hl::before {
+  border-color: var(--lime);
+  box-shadow: 0 0 12px rgba(163, 230, 53, 0.7);
+}
+.tl__gen {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: var(--cyan);
+}
+.tl.hl .tl__gen {
+  color: var(--lime);
+}
+.tl__txt {
+  margin-top: 4px;
+  font-size: 14.5px;
+  color: var(--muted);
+}
+.tl__txt b {
+  color: var(--text);
+}
+
+@media (max-width: 1020px) {
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+  .infra__cards {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 760px) {
+  .room__list {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>지원서 관리 | S.OWL Admin</title>
+<meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#050608" />
+<link rel="icon" href="/favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<!-- 첫 페인트용 최소 스타일 + 진짜 CSS <link> — 페이지 전환 FOUC 방지 -->
+<style>
+  :root{color-scheme:dark}
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;background:#050608;color:#e8eef7;-webkit-font-smoothing:antialiased;
+    font-family:'Pretendard Variable',Pretendard,Inter,-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif}
+  .sk{display:block;border-radius:6px;background:rgba(255,255,255,.07);animation:skp 1.3s ease-in-out infinite}
+  @keyframes skp{0%,100%{opacity:.45}50%{opacity:.9}}
+  @media (prefers-reduced-motion:reduce){.sk{animation:none}}
+  .anav{display:flex;align-items:center;gap:4px;padding:10px 20px;
+    border-bottom:1px solid rgba(255,255,255,.1)}
+  .amain{max-width:1180px;margin:0 auto;padding:24px 20px 60px}
+</style>
+<link rel="stylesheet" href="/src/styles/tokens.css" />
+<link rel="stylesheet" href="/src/styles/base.css" />
+<link rel="stylesheet" href="/src/styles/components.css" />
+<link rel="stylesheet" href="/src/styles/member.css" />
+<link rel="stylesheet" href="/src/styles/adminapp.css" />
+</head>
+<body>
+<!-- 개인정보 화면 — 3D 배경·화려한 연출 없이 정보 밀도 위주 (설계도 ② §9) -->
+
+<nav class="anav" id="anav" aria-label="관리자 메뉴" aria-busy="true">
+  <span class="sk" style="height:20px;width:110px;margin-right:14px"></span>
+  <span class="sk" style="height:16px;width:70px;margin-right:8px"></span>
+  <span class="sk" style="height:16px;width:70px;margin-right:8px"></span>
+  <span class="sk" style="height:16px;width:90px"></span>
+</nav>
+<main class="amain" id="amain" aria-busy="true">
+  <span class="sk" style="height:26px;width:180px;margin-bottom:20px"></span>
+  <span class="sk" style="height:90px;width:100%;margin-bottom:16px"></span>
+  <span class="sk" style="height:260px;width:100%"></span>
+</main>
+<script type="module" src="/src/admin/pages/applications.ts"></script>
+</body>
+</html>

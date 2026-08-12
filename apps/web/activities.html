@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>활동 | SLEEPY OWL</title>
+<meta name="description" content="SLEEPY OWL의 활동 — 기술 세미나, 미니 해커톤, 스터디 그룹, 번개 특강." />
+<meta name="theme-color" content="#050608" />
+<link rel="icon" href="/favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<!-- 첫 페인트용 최소 스타일 — 나머지는 JS 모듈이 불러온다 (tools/gen-pages.mjs가 관리) -->
+<style data-critical>
+  :root{color-scheme:dark}
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:88px;-webkit-text-size-adjust:100%}
+  body{margin:0;background:#050608;color:#e8eef7;font-size:16px;line-height:1.6;
+    overflow-x:hidden;-webkit-font-smoothing:antialiased;
+    font-family:'Pretendard Variable',Pretendard,Inter,-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif}
+  img{max-width:100%;display:block}
+  a{color:inherit;text-decoration:none}
+  h1,h2,h3,h4{margin:0;line-height:1.12;letter-spacing:-.03em;font-weight:800}
+  p{margin:0}
+  ul{margin:0;padding:0;list-style:none}
+  .bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .page{position:relative;z-index:1}
+  .wrap{max-width:1180px;margin-inline:auto;padding-inline:22px}
+</style>
+<!-- gen:css 진짜 CSS — <link>는 렌더 블로킹이라 페이지 전환 FOUC가 없다 (tools/gen-pages.mjs가 관리) -->
+<link rel="stylesheet" href="/src/styles/tokens.css" />
+<link rel="stylesheet" href="/src/styles/base.css" />
+<link rel="stylesheet" href="/src/styles/components.css" />
+<link rel="stylesheet" href="/src/styles/pages/activities.css" />
+<!-- /gen:css -->
+</head>
+<body>
+
+<div class="bg-layer" aria-hidden="true">
+  <div class="bg-glow a"></div><div class="bg-glow b"></div><div class="bg-glow c"></div>
+  <div class="bg-grid"></div><div class="bg-scan"></div><div class="bg-noise"></div>
+</div>
+
+<div class="page">
+
+<div id="nav"></div>
+
+<main>
+<header class="acts-hero">
+  <div class="wrap">
+    <div class="sec__head center rv">
+      <span class="sec__eyebrow">// Activities</span>
+      <h1 class="sec__title">S.OWL 활동</h1>
+      <p class="sec__desc">배우는 사람과 알려주는 사람이 계속 바뀝니다. 그게 우리가 성장하는 방식입니다. 카드를 눌러 자세히 보세요.</p>
+    </div>
+  </div>
+</header>
+
+<section class="sec" style="padding-top:20px">
+  <div class="wrap">
+    <div class="acts">
+      <article class="act a1 rv" id="seminar" tabindex="0" role="button" aria-expanded="false">
+        <div class="act__bar"></div><div class="act__tag">01 · SEMINAR</div>
+        <h3>기술 세미나 <span class="plus" aria-hidden="true"></span></h3>
+        <p>자유 주제로 기술과 서비스를 조사해 부원 앞에서 발표합니다. 발표를 준비하며 지식이 정리되고, 듣는 사람의 시야가 넓어집니다.</p>
+        <div class="act__detail">
+          <div class="act__inner">
+            <div class="act__meta">
+              <span class="act__chip">매월 수요일 18:10</span>
+              <span class="act__chip">동아리방</span>
+              <span class="act__chip">전원 참여</span>
+            </div>
+            <span class="act__h mono">Process</span>
+            <ol class="act__steps">
+              <li>주제는 자유 — 새로 배운 기술, 삽질기, 파보고 싶던 서비스 전부 OK</li>
+              <li>15~20분 발표 + 자유 Q&amp;A, 부담은 낮게 질문은 뾰족하게</li>
+              <li>발표 자료는 회원 자료실에 아카이빙 — 기수가 지나도 남습니다</li>
+            </ol>
+            <span class="act__h mono">You Get</span>
+            <ul class="act__gains">
+              <li>사람들 앞에서 기술을 설명해 본 경험 — 발표·면접 대비</li>
+              <li>배운 것을 글과 슬라이드로 정리하는 습관</li>
+              <li>내 전공 밖 기술까지 훑어보는 시야</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+      <article class="act a2 rv" id="hackathon" tabindex="0" role="button" aria-expanded="false">
+        <div class="act__bar"></div><div class="act__tag">02 · HACKATHON</div>
+        <h3>미니 해커톤 <span class="plus" aria-hidden="true"></span></h3>
+        <p>학기당 1회, 기획부터 배포까지 하루 만에. 한정된 시간 안에 실제 동작하는 서비스를 만들어내는 S.OWL의 축제입니다.</p>
+        <div class="act__detail">
+          <div class="act__inner">
+            <div class="act__meta">
+              <span class="act__chip">학기 1회</span>
+              <span class="act__chip">1박 2일</span>
+              <span class="act__chip">팀 단위</span>
+            </div>
+            <span class="act__h mono">Process</span>
+            <ol class="act__steps">
+              <li>즉석 팀 빌딩 — 기획·디자인·개발이 섞이도록 팀을 짭니다</li>
+              <li>밤샘 개발 — 만든 것은 동아리 서버랙에 바로 배포합니다</li>
+              <li>아침 데모 데이 — 전원 시연, 투표와 시상까지</li>
+            </ol>
+            <span class="act__h mono">You Get</span>
+            <ul class="act__gains">
+              <li>실제로 돌아가는 서비스 하나 — 포트폴리오 재료</li>
+              <li>기획부터 배포까지 팀 개발 사이클 경험</li>
+              <li>밤새 같이 구른 팀원 — 제일 빨리 친해지는 법</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+      <article class="act a3 rv" id="study" tabindex="0" role="button" aria-expanded="false">
+        <div class="act__bar"></div><div class="act__tag">03 · STUDY</div>
+        <h3>스터디 그룹 <span class="plus" aria-hidden="true"></span></h3>
+        <p>혼자면 어렵지만 같이 하면 되는 것들. 알고리즘부터 프레임워크까지 원하는 주제를 직접 열거나 참여할 수 있습니다.</p>
+        <div class="act__detail">
+          <div class="act__inner">
+            <div class="act__meta">
+              <span class="act__chip">상시 운영</span>
+              <span class="act__chip">온·오프라인 병행</span>
+              <span class="act__chip">개설 자유</span>
+            </div>
+            <span class="act__h mono">Process</span>
+            <ol class="act__steps">
+              <li>학기 초 주제 공모 — 원하는 스터디를 직접 개설할 수 있습니다</li>
+              <li>주 1회 정기 모임 — 진도와 기록은 스터디장이 관리</li>
+              <li>결과물과 정리 노트는 스터디 자료실에 차곡차곡</li>
+            </ol>
+            <span class="act__h mono">You Get</span>
+            <ul class="act__gains">
+              <li>혼자서는 못 끝냈을 커리큘럼 완주 경험</li>
+              <li>같이 막히고 같이 뚫는 동료</li>
+              <li>기록으로 남는 학습 흔적 — 포트폴리오 강화</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+      <article class="act a4 rv" id="lecture" tabindex="0" role="button" aria-expanded="false">
+        <div class="act__bar"></div><div class="act__tag">04 · LECTURE</div>
+        <h3>번개 특강 <span class="plus" aria-hidden="true"></span></h3>
+        <p>Git 플로우, 리눅스 명령어, API 키 관리처럼 수업에서 안 알려주는 실무 팁을 1시간 안에 압축해서 전달합니다.</p>
+        <div class="act__detail">
+          <div class="act__inner">
+            <div class="act__meta">
+              <span class="act__chip">비정기 · 수시</span>
+              <span class="act__chip">1시간 압축</span>
+              <span class="act__chip">Q&amp;A 중심</span>
+            </div>
+            <span class="act__h mono">Process</span>
+            <ol class="act__steps">
+              <li>단톡에 "이거 아는 사람?"이 뜨면 특강이 잡힙니다</li>
+              <li>아는 부원이 그날 저녁 화이트보드 앞에 섭니다</li>
+              <li>Git 플로우 · 리눅스 · 배포 · API 키 관리 같은 실전 주제</li>
+            </ol>
+            <span class="act__h mono">You Get</span>
+            <ul class="act__gains">
+              <li>수업에선 안 가르쳐주는 실무 감각</li>
+              <li>모르면 바로 물어보는 문화</li>
+              <li>가르치는 쪽이 되어보는 경험 — 다음 강사는 당신</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+    </div>
+    <p class="acts__foot">Our Code Never Sleeps</p>
+  </div>
+</section>
+</main>
+
+<div id="footer"></div>
+
+</div>
+
+<script type="module" src="/src/pages/activities.ts"></script>
+</body>
+</html>

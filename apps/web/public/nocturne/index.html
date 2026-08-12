@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>S.OWL</title>
+<meta name="description" content="S.OWL — 성공회대학교 IT 동아리. 밤에 깨어나는 부엉이들의 코딩 둥지." />
+<meta name="theme-color" content="#000000" />
+
+<!-- 폰트: 초압축 산세리프(Anton) + 본문(Inter) -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+/* ============================================================
+   기본 — 빛과 대비로만 위계를 만든다. 테두리·그림자 남발 금지.
+   ============================================================ */
+:root {
+  --bg: #000000;
+  --text: #F5F1EA;
+  --accent: #A78BFA; /* 부엉이 눈 색 (바이올렛) */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --display: 'Anton', 'Archivo Black', sans-serif;
+  --sans: 'Inter', -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: auto; -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-weight: 300;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+body.locked { overflow: hidden; } /* 프리로더 동안 스크롤 잠금 */
+
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+h1, h2, h3 { margin: 0; font-weight: 400; }
+p { margin: 0; }
+
+/* ============================================================
+   고정 배경 — 부엉이는 화면에 붙어 있고 콘텐츠가 그 위를 흐른다
+   (background-attachment: fixed는 모바일에서 깨져서 fixed div 사용)
+   ============================================================ */
+#bg-fixed {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+#bg-fixed img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  will-change: transform;
+}
+
+/* 가독성 스크림 — 좌측·상하를 살짝 눌러 텍스트 자리를 만든다 */
+#bg-fixed::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to right, rgba(0,0,0,0.72), rgba(0,0,0,0.28) 45%, transparent 70%),
+    linear-gradient(to bottom, rgba(0,0,0,0.6), transparent 22%, transparent 74%, rgba(0,0,0,0.82));
+  pointer-events: none;
+}
+
+main { position: relative; z-index: 1; }
+
+/* ============================================================
+   프리로더 — 검은 화면 + 중앙 얇은 진행 바
+   ============================================================ */
+#preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--bg);
+  display: grid;
+  place-items: center;
+  transition: opacity 0.9s var(--ease), visibility 0.9s;
+}
+
+#preloader.done { opacity: 0; visibility: hidden; }
+
+.preloader-track {
+  width: min(42vw, 320px);
+  height: 1px;
+  background: rgba(245, 241, 234, 0.14);
+  overflow: hidden;
+}
+
+.preloader-bar {
+  width: 100%;
+  height: 100%;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.4s var(--ease);
+}
+
+/* ============================================================
+   고정 nav — 진입 시 위에서 아래로 페이드인
+   ============================================================ */
+#nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 26px clamp(20px, 4vw, 56px);
+  opacity: 0;
+  transform: translateY(-16px);
+  transition: opacity 1s var(--ease) 0.15s, transform 1s var(--ease) 0.15s;
+}
+
+body.ready #nav { opacity: 1; transform: none; }
+
+.nav-mark {
+  font-family: var(--display);
+  font-size: 18px;
+  letter-spacing: 0.08em;
+}
+
+.nav-right { display: flex; align-items: center; gap: clamp(18px, 3vw, 38px); }
+
+.nav-link {
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: rgba(245, 241, 234, 0.66);
+  transition: color 0.4s var(--ease);
+}
+
+.nav-link:hover { color: var(--text); }
+
+.nav-cta {
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  padding: 10px 22px;
+  border: 1px solid rgba(245, 241, 234, 0.35);
+  border-radius: 999px;
+  transition: border-color 0.4s var(--ease), background 0.4s var(--ease), color 0.4s var(--ease);
+}
+
+.nav-cta:hover { border-color: var(--accent); background: var(--accent); color: #000; }
+
+@media (max-width: 767px) { .nav-link { display: none; } }
+
+/* ============================================================
+   Hero (100vh) — 고정 배경 위 거대 타이틀
+   ============================================================ */
+#hero {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#hero-title {
+  position: absolute;
+  left: 50%;
+  top: 54%;
+  transform: translate(-50%, -50%);
+  font-family: var(--display);
+  color: var(--text);
+  line-height: 0.9;
+  white-space: nowrap;
+  user-select: none;
+}
+
+#hero-title .ch {
+  display: inline-block;
+  will-change: transform, opacity, filter;
+}
+
+.hero-eyebrow {
+  position: absolute;
+  left: 50%;
+  top: calc(54% - 1em);
+  transform: translate(-50%, -50%);
+  margin-top: -11vw;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.hero-tag {
+  position: absolute;
+  left: 50%;
+  bottom: 7vh;
+  transform: translateX(-50%);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: rgba(245, 241, 234, 0.55);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   스크롤 텍스트 시퀀스 — 3블록 (좌측 정렬, 부엉이를 피해 왼쪽에)
+   ============================================================ */
+#seq { position: relative; padding: 8vh 0; }
+
+.seq-block {
+  min-height: 82vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  text-align: left;
+  padding: 0 clamp(22px, 7vw, 110px);
+  max-width: 860px;
+}
+
+.seq-eyebrow {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.seq-title {
+  margin-top: 22px;
+  font-family: var(--display);
+  font-size: clamp(2.6rem, 7.5vw, 6rem);
+  letter-spacing: 0.01em;
+  line-height: 1.04;
+}
+
+.seq-body {
+  margin-top: 24px;
+  max-width: 30em;
+  font-size: clamp(0.95rem, 1.6vw, 1.12rem);
+  color: rgba(245, 241, 234, 0.66);
+}
+
+.seq-block > * { will-change: transform, opacity, filter; }
+
+/* ============================================================
+   텍스트 드럼 — 3D 원통형 회전 텍스트
+   ============================================================ */
+#drum-wrap { height: 220vh; position: relative; }
+
+#drum-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  perspective: 900px;
+}
+
+#drum-stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.9) 8%, transparent 38%, transparent 62%, rgba(0,0,0,0.9) 92%);
+  pointer-events: none;
+}
+
+#drum {
+  position: relative;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.drum-line {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-origin: center;
+  backface-visibility: hidden;
+  font-family: var(--display);
+  font-size: clamp(3rem, 9vw, 7.5rem);
+  line-height: 1;
+  white-space: nowrap;
+  color: rgba(245, 241, 234, 0.92);
+}
+
+.drum-line em {
+  font-style: normal;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(245, 241, 234, 0.4);
+}
+
+.drum-line strong { font-weight: 400; color: var(--accent); }
+
+/* ============================================================
+   푸터 CTA
+   ============================================================ */
+#cta {
+  min-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 12vh 22px 0;
+}
+
+.cta-title {
+  font-family: var(--display);
+  font-size: clamp(2.8rem, 9vw, 7.5rem);
+  line-height: 1.02;
+}
+
+.cta-title .accent { color: var(--accent); }
+
+.cta-sub {
+  margin-top: 24px;
+  color: rgba(245, 241, 234, 0.66);
+  font-size: clamp(0.95rem, 1.6vw, 1.1rem);
+}
+
+.cta-btn {
+  margin-top: 44px;
+  display: inline-block;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 18px 46px;
+  border: 1px solid rgba(245, 241, 234, 0.4);
+  border-radius: 999px;
+  transition: border-color 0.4s var(--ease), background 0.4s var(--ease), color 0.4s var(--ease);
+}
+
+.cta-btn:hover { border-color: var(--accent); background: var(--accent); color: #000; }
+
+#cta > * { will-change: transform, opacity, filter; }
+
+.footer-line {
+  margin-top: 16vh;
+  padding: 30px 0 34px;
+  width: min(1200px, 92vw);
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: rgba(245, 241, 234, 0.38);
+}
+
+/* ============================================================
+   모션 최소화 — 스크롤 연동 모션 전부 끄고 정적 레이아웃
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  #drum-wrap { height: auto; }
+  #drum-stage { position: static; height: auto; padding: 18vh 0; perspective: none; }
+  #drum { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  .drum-line { position: static; transform: none !important; }
+  #nav { transition: none; opacity: 1; transform: none; }
+}
+</style>
+</head>
+<body class="locked">
+
+<!-- ===================== 프리로더 ===================== -->
+<div id="preloader" aria-hidden="true">
+  <div class="preloader-track"><div class="preloader-bar" id="preloaderBar"></div></div>
+</div>
+
+<!-- ===================== 고정 배경 (부엉이) ===================== -->
+<div id="bg-fixed" aria-hidden="true">
+  <!-- ← 배경 교체하는 곳: owl.jpg 파일만 갈아끼우면 된다 -->
+  <img id="bg-img" src="./owl.jpg" alt="" fetchpriority="high" />
+</div>
+
+<!-- ===================== 고정 NAV ===================== -->
+<nav id="nav">
+  <a class="nav-mark" href="#" id="navMark">S.OWL</a>
+  <div class="nav-right" id="navRight"><!-- CONFIG.nav 링크가 여기 들어간다 --></div>
+</nav>
+
+<main>
+
+<!-- ===================== HERO ===================== -->
+<header id="hero">
+  <p class="hero-eyebrow" id="heroEyebrow"></p>
+  <h1 id="hero-title" aria-label="S.OWL"><span id="heroChars" aria-hidden="true"></span></h1>
+  <p class="hero-tag" id="heroTag"></p>
+</header>
+
+<!-- ===================== 스크롤 텍스트 시퀀스 ===================== -->
+<section id="seq"><!-- CONFIG.seq 블록이 여기 들어간다 --></section>
+
+<!-- ===================== 텍스트 드럼 ===================== -->
+<div id="drum-wrap">
+  <div id="drum-stage" role="presentation">
+    <div id="drum"><!-- CONFIG.drum 라인이 여기 들어간다 --></div>
+  </div>
+</div>
+
+<!-- ===================== 푸터 CTA ===================== -->
+<section id="cta">
+  <h2 class="cta-title" id="ctaTitle"></h2>
+  <p class="cta-sub" id="ctaSub"></p>
+  <a class="cta-btn" id="ctaBtn" href="#"></a>
+  <div class="footer-line"><span id="footLeft"></span><span id="footRight"></span></div>
+</section>
+
+</main>
+
+<script>
+/* ============================================================
+   CONFIG — 브랜드명·카피·링크는 전부 여기서 읽는다
+   ============================================================ */
+const CONFIG = {
+  brand: 'S.OWL',
+  eyebrow: 'SKHU IT CLUB',
+  tagline: 'Night coders of SKHU',
+  nav: [
+    { label: '소개', href: '#seq' },
+    { label: '키워드', href: '#drum-wrap' },
+    { label: '문의', href: '#cta' },
+  ],
+  navCta: { label: '지원하기', href: '/apply.html' },
+  seq: [
+    {
+      eyebrow: '01 — Silence',
+      title: '소리 없이 난다',
+      body: '부엉이의 깃털은 공기를 찢지 않는다. 요란한 스펙 자랑 대신, 조용히 쌓은 실력으로 말한다.',
+    },
+    {
+      eyebrow: '02 — Vision',
+      title: '어둠 속에서 본다',
+      body: '밤이 깊을수록 눈은 밝아진다. 남들이 잠든 시간, 우리는 코드를 읽고 쓴다.',
+    },
+    {
+      eyebrow: '03 — Flight',
+      title: '정면으로 날아든다',
+      body: '아이디어가 생기면 우회하지 않는다. 일단 만들고, 만들면서 배운다.',
+    },
+  ],
+  drum: [
+    { text: 'S.OWL', style: 'solid' },
+    { text: 'NIGHT CODERS', style: 'ghost' },
+    { text: 'SILENT WINGS', style: 'solid' },
+    { text: 'VIOLET EYES', style: 'accent' },
+    { text: 'DEEP FOCUS', style: 'solid' },
+    { text: 'HEAD-ON', style: 'ghost' },
+    { text: 'SLEEPY OWL', style: 'solid' },
+    { text: 'S.OWL', style: 'ghost' },
+  ],
+  cta: {
+    title: '밤은 <span class="accent">부엉이의</span> 시간',
+    sub: '성공회대학교 IT 동아리 S.OWL — 둥지는 열려 있다. 코딩 테스트도, 기술 면접도 없다.',
+    btn: { label: '지원하기', href: '/apply.html' },
+    footLeft: '© S.OWL — SLEEPY OWL',
+    footRight: 'night coders, head-on',
+  },
+};
+
+/* ============================================================
+   유틸
+   ============================================================ */
+const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
+const lerp = (a, b, t) => a + (b - a) * t;
+const $ = (s) => document.querySelector(s);
+
+const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const isMobile = () => window.innerWidth < 768;
+
+/* ============================================================
+   CONFIG → DOM 주입
+   ============================================================ */
+function build() {
+  document.title = CONFIG.brand;
+  $('#navMark').textContent = CONFIG.brand;
+
+  const navRight = $('#navRight');
+  for (const l of CONFIG.nav) {
+    const a = document.createElement('a');
+    a.className = 'nav-link';
+    a.href = l.href;
+    a.textContent = l.label;
+    navRight.appendChild(a);
+  }
+  const cta = document.createElement('a');
+  cta.className = 'nav-cta';
+  cta.href = CONFIG.navCta.href;
+  cta.textContent = CONFIG.navCta.label;
+  navRight.appendChild(cta);
+
+  // 헤드라인 — 문자 단위 분해 (스크린리더는 h1의 aria-label로 원문을 읽는다)
+  const chars = $('#heroChars');
+  for (const c of CONFIG.brand) {
+    const s = document.createElement('span');
+    s.className = 'ch';
+    s.textContent = c;
+    chars.appendChild(s);
+  }
+  $('#heroEyebrow').textContent = CONFIG.eyebrow;
+  $('#heroTag').textContent = CONFIG.tagline;
+
+  const seq = $('#seq');
+  for (const b of CONFIG.seq) {
+    const div = document.createElement('div');
+    div.className = 'seq-block';
+    div.innerHTML =
+      '<p class="seq-eyebrow"></p><h2 class="seq-title"></h2><p class="seq-body"></p>';
+    div.children[0].textContent = b.eyebrow;
+    div.children[1].textContent = b.title;
+    div.children[2].textContent = b.body;
+    seq.appendChild(div);
+  }
+
+  const drum = $('#drum');
+  for (const w of CONFIG.drum) {
+    const line = document.createElement('div');
+    line.className = 'drum-line';
+    if (w.style === 'ghost') line.innerHTML = '<em></em>', (line.firstChild.textContent = w.text);
+    else if (w.style === 'accent')
+      line.innerHTML = '<strong></strong>', (line.firstChild.textContent = w.text);
+    else line.textContent = w.text;
+    drum.appendChild(line);
+  }
+
+  $('#ctaTitle').innerHTML = CONFIG.cta.title; // CONFIG 내부 신뢰 문자열
+  $('#ctaSub').textContent = CONFIG.cta.sub;
+  const btn = $('#ctaBtn');
+  btn.textContent = CONFIG.cta.btn.label;
+  btn.href = CONFIG.cta.btn.href;
+  $('#footLeft').textContent = CONFIG.cta.footLeft;
+  $('#footRight').textContent = CONFIG.cta.footRight;
+}
+
+/* ============================================================
+   헤드라인을 100vw에 정확히 맞춘다 — 실제 폭을 재서 스케일
+   ============================================================ */
+function fitHeadline() {
+  const title = $('#hero-title');
+  const probe = 100;
+  title.style.fontSize = probe + 'px';
+  const w = $('#heroChars').getBoundingClientRect().width;
+  if (w > 0) title.style.fontSize = probe * (window.innerWidth / w) + 'px';
+}
+
+/* ============================================================
+   드럼 지오메트리 — 줄 높이에서 원통 반지름을 계산
+   ============================================================ */
+let drumStep = 0;
+function layoutDrum() {
+  const lines = document.querySelectorAll('.drum-line');
+  const n = lines.length;
+  drumStep = 360 / n;
+  const h = lines[0].getBoundingClientRect().height || 100;
+  const radius = Math.round((h * 1.25) / 2 / Math.tan(Math.PI / n));
+  lines.forEach((el, i) => {
+    el.style.transform =
+      'translate(-50%,-50%) rotateX(' + i * drumStep + 'deg) translateZ(' + radius + 'px)';
+  });
+}
+
+/* ============================================================
+   스크롤 엔진 — scroll 이벤트에서 DOM을 만지지 않는다.
+   rAF 루프에서 lerp(현재, 목표, 0.1)로 감쇠. 전부 progress 매핑이라
+   위로 스크롤하면 그대로 역재생된다.
+   ============================================================ */
+const offsets = { seqBlocks: [], drumTop: 0, drumLen: 1, ctaTop: 0, ctaKids: [], docLen: 1 };
+
+function measure() {
+  const vh = window.innerHeight;
+  offsets.seqBlocks = Array.from(document.querySelectorAll('.seq-block')).map((el) => {
+    const r = el.getBoundingClientRect();
+    return { el, top: r.top + window.scrollY, h: r.height, kids: Array.from(el.children) };
+  });
+  const dw = $('#drum-wrap');
+  offsets.drumTop = dw.getBoundingClientRect().top + window.scrollY;
+  offsets.drumLen = dw.offsetHeight - vh;
+  const ctaEl = $('#cta');
+  offsets.ctaTop = ctaEl.getBoundingClientRect().top + window.scrollY;
+  offsets.ctaKids = Array.from(ctaEl.children);
+  offsets.docLen = Math.max(1, document.documentElement.scrollHeight - vh);
+}
+
+let cur = -1; // 감쇠된 가상 스크롤
+
+function frame() {
+  const target = window.scrollY;
+  cur = Math.abs(target - cur) < 0.05 ? target : lerp(cur, target, 0.1);
+  const vh = window.innerHeight;
+  const mob = isMobile();
+
+  /* --- 고정 배경: 페이지 전체 진행도로 아주 느리게 줌 (모바일 제외) --- */
+  if (!mob) {
+    const gp = clamp01(cur / offsets.docLen);
+    $('#bg-img').style.transform = 'scale(' + (1 + gp * 0.08) + ')';
+  }
+
+  /* --- Hero (0 → 100vh): 문자 낙하 --- */
+  const hp = clamp01(cur / vh);
+  const chars = document.querySelectorAll('#heroChars .ch');
+  for (let i = 0; i < chars.length; i++) {
+    const local = clamp01(hp * 1.7 - i * 0.055); // stagger
+    const st = chars[i].style;
+    st.transform = 'translateY(' + local * 40 + 'px) scaleY(' + (1 - 0.15 * local) + ')';
+    st.opacity = String(1 - local);
+    if (!mob) st.filter = 'blur(' + local * 8 + 'px)';
+  }
+  $('#heroEyebrow').style.opacity = String(1 - hp * 1.8);
+  $('#heroTag').style.opacity = String(Math.max(0, 1 - hp * 2));
+
+  /* --- 시퀀스 블록: blur 12 + scale 1.06 + opacity 0 → 제자리 --- */
+  for (const b of offsets.seqBlocks) {
+    const rel = b.top - cur;
+    if (rel > vh * 1.2 || rel + b.h < -vh * 0.2) continue;
+    const pr = clamp01((vh * 0.92 - rel) / (vh * 0.5));
+    b.kids.forEach((kid, ki) => {
+      const local = clamp01(pr * 1.35 - ki * 0.14);
+      const st = kid.style;
+      st.opacity = String(local);
+      st.transform = 'translateY(' + (1 - local) * 26 + 'px) scale(' + (1.06 - 0.06 * local) + ')';
+      if (!mob) st.filter = 'blur(' + (1 - local) * 12 + 'px)';
+    });
+  }
+
+  /* --- 텍스트 드럼: 구간 진행도 → 원통 회전 --- */
+  const dp = clamp01((cur - offsets.drumTop) / offsets.drumLen);
+  $('#drum').style.transform = 'rotateX(' + (-30 + dp * 360) + 'deg)';
+
+  /* --- 푸터 CTA 등장 --- */
+  const crel = offsets.ctaTop - cur;
+  if (crel < vh * 1.2) {
+    const pr = clamp01((vh * 0.94 - crel) / (vh * 0.55));
+    offsets.ctaKids.forEach((kid, ki) => {
+      const local = clamp01(pr * 1.35 - ki * 0.13);
+      const st = kid.style;
+      st.opacity = String(local);
+      st.transform = 'translateY(' + (1 - local) * 30 + 'px) scale(' + (1.06 - 0.06 * local) + ')';
+      if (!mob) st.filter = 'blur(' + (1 - local) * 12 + 'px)';
+    });
+  }
+
+  requestAnimationFrame(frame);
+}
+
+/* ============================================================
+   프리로더 — 배경 이미지 로드까지 진행 바, 끝나면 해제
+   ============================================================ */
+function preload() {
+  const bar = $('#preloaderBar');
+  let fake = 0;
+  const tick = setInterval(() => {
+    fake = Math.min(fake + Math.random() * 0.16, 0.82);
+    bar.style.transform = 'scaleX(' + fake + ')';
+  }, 180);
+
+  const img = $('#bg-img');
+  const done = () => {
+    clearInterval(tick);
+    bar.style.transform = 'scaleX(1)';
+    setTimeout(() => {
+      $('#preloader').classList.add('done');
+      document.body.classList.remove('locked');
+      document.body.classList.add('ready');
+      measure();
+    }, 350);
+  };
+
+  const imgReady =
+    img.complete && img.naturalWidth > 0
+      ? Promise.resolve()
+      : new Promise((r) => {
+          img.addEventListener('load', r, { once: true });
+          img.addEventListener('error', r, { once: true });
+        });
+  // 폰트까지 기다리되, 4초 넘으면 그냥 연다
+  Promise.race([
+    Promise.all([imgReady, document.fonts ? document.fonts.ready : Promise.resolve()]),
+    new Promise((r) => setTimeout(r, 4000)),
+  ]).then(done);
+}
+
+/* ============================================================
+   초기화
+   ============================================================ */
+build();
+fitHeadline();
+layoutDrum();
+measure();
+preload();
+
+if (!reduced) {
+  cur = window.scrollY;
+  requestAnimationFrame(frame);
+}
+// 모션 최소화면 스크롤 연동 없이 정적 레이아웃 그대로 둔다 (CSS가 처리)
+
+let resizeT;
+window.addEventListener(
+  'resize',
+  () => {
+    clearTimeout(resizeT);
+    resizeT = setTimeout(() => {
+      fitHeadline();
+      layoutDrum();
+      measure();
+    }, 120);
+  },
+  { passive: true },
+);
+if (document.fonts) document.fonts.ready.then(() => { fitHeadline(); layoutDrum(); measure(); });
+
+/* ============================================================
+   다음에 손볼 것
+   1. 배경을 바꾸려면 ./owl.jpg 파일만 갈아끼운다 (고정 배경 = #bg-fixed img).
+   2. 카피·링크·드럼 단어는 전부 상단 CONFIG에서 수정.
+   3. 스크럽 비디오 버전이 필요해지면 이전 구조(setHeroProgress)를 복원하면 된다.
+   ============================================================ */
+</script>
+</body>
+</html>

@@ -1,0 +1,509 @@
+/* ============================================================
+   회원 공간 3차 — 칸반 · 포트폴리오 · 채팅 · 확인서 · GitHub · AI · 공모전
+   ============================================================ */
+
+/* ---------- 칸반 보드 ---------- */
+.kanban {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+.kcol {
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: rgba(255, 255, 255, 0.02);
+  min-height: 160px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.kcol.over {
+  border-color: rgba(34, 211, 238, 0.6);
+  background: rgba(34, 211, 238, 0.06);
+}
+.kcol__head {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  padding: 11px 13px;
+  border-bottom: 1px solid var(--line);
+}
+.kcol__body {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 60px;
+}
+.kcard {
+  position: relative;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-sm);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 10px 12px;
+  cursor: grab;
+}
+.kcard:active {
+  cursor: grabbing;
+}
+.kcard__title {
+  font-size: 13.5px;
+  line-height: 1.4;
+  padding-right: 16px;
+}
+.kcard__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-top: 7px;
+  font-size: 11px;
+}
+.kcard__del {
+  position: absolute;
+  top: 6px;
+  right: 7px;
+  border: 0;
+  background: none;
+  color: var(--dim);
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+}
+.kcard__del:hover {
+  color: var(--danger);
+}
+@media (max-width: 900px) {
+  .kanban {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ---------- 포트폴리오 ---------- */
+.pfcard {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: rgba(255, 255, 255, 0.025);
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s;
+}
+.pfcard:hover {
+  transform: translateY(-3px);
+  border-color: rgba(34, 211, 238, 0.4);
+}
+.pfcard__thumb {
+  position: relative;
+  height: 128px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.12), rgba(167, 139, 250, 0.12));
+  border-bottom: 1px solid var(--line);
+  overflow: hidden;
+}
+.pfcard__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.pfcard__initial {
+  font-family: var(--mono);
+  font-size: 30px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.35);
+}
+.pfcard__public {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--lime);
+  border: 1px solid rgba(163, 230, 53, 0.45);
+  background: rgba(5, 6, 8, 0.75);
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+.pfcard__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px 16px;
+  flex: 1;
+}
+.pfcard__body h3 {
+  font-size: 16px;
+}
+.pfcard__body p {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ---------- 채팅 ---------- */
+.chatshell {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+.chatrooms {
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: rgba(255, 255, 255, 0.025);
+  padding: 14px;
+}
+.chatroom {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13.5px;
+}
+.chatroom:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+}
+.chatroom.on {
+  background: rgba(34, 211, 238, 0.1);
+  color: var(--cyan-hi);
+}
+.chatroom b {
+  flex: 1;
+}
+.chatstate {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--dim);
+}
+.chatstate.on {
+  color: var(--lime);
+}
+.chatlog {
+  height: min(52vh, 460px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px 2px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.chatmsg {
+  max-width: 78%;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.03);
+}
+.chatmsg.mine {
+  align-self: flex-end;
+  border-color: rgba(34, 211, 238, 0.35);
+  background: rgba(34, 211, 238, 0.08);
+}
+.chatmsg__head {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  font-size: 11.5px;
+  margin-bottom: 3px;
+}
+.chatmsg__head .dim {
+  font-size: 10.5px;
+}
+.chatmsg__body {
+  font-size: 14px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.chatpresence {
+  font-size: 11.5px;
+  color: var(--dim);
+  padding: 8px 2px 0;
+  min-height: 18px;
+}
+.chatform {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+.chatform .mctl {
+  flex: 1;
+}
+@media (max-width: 780px) {
+  .chatshell {
+    grid-template-columns: 1fr;
+  }
+  .chatrooms {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+  }
+  .chatrooms .mpanel__t {
+    display: none;
+  }
+  .chatroom {
+    width: auto;
+    white-space: nowrap;
+  }
+}
+
+/* ---------- 활동 확인서 ---------- */
+.cert {
+  position: relative;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 34px 38px;
+  margin-bottom: 18px;
+}
+.cert__head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 18px;
+  border-bottom: 2px solid var(--cyan);
+}
+.cert__club {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--dim);
+}
+.cert__head h1 {
+  font-size: 27px;
+  margin-top: 4px;
+}
+.cert__meta {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 22px 0;
+  font-size: 14px;
+}
+.cert__meta th,
+.cert__meta td {
+  border: 1px solid var(--line);
+  padding: 9px 13px;
+  text-align: left;
+}
+.cert__meta th {
+  width: 90px;
+  background: rgba(255, 255, 255, 0.04);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--muted);
+  font-weight: 700;
+}
+.cert__body p {
+  font-size: 14.5px;
+  color: var(--muted);
+}
+.cert__list {
+  margin: 14px 0;
+  padding-left: 18px;
+  list-style: disc;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+}
+.cert__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.cert__stats span {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  padding: 4px 11px;
+  color: var(--muted);
+}
+.cert__foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: 30px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+.cert__code {
+  font-size: 12.5px;
+  color: var(--cyan-hi);
+}
+.cert__sign {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 14px;
+}
+.cert__draft {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 38px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+  transform: rotate(-14deg);
+}
+
+/* 인쇄 — 확인서만 흰 배경으로 남긴다 (PDF로 저장 시에도 동일) */
+@media print {
+  .msb,
+  .mtop,
+  .noprint,
+  .toast {
+    display: none !important;
+  }
+  .mshell,
+  .mmain,
+  .mcontent {
+    display: block !important;
+    padding: 0 !important;
+    max-width: none !important;
+  }
+  html,
+  body {
+    background: #fff !important;
+    color: #111 !important;
+  }
+  .cert {
+    border: 1px solid #999;
+    background: #fff;
+    color: #111;
+    padding: 24px 28px;
+  }
+  .cert__meta th {
+    background: #f2f2f2;
+    color: #333;
+  }
+  .cert__body p,
+  .cert__stats span,
+  .cert__meta td {
+    color: #222;
+  }
+  .cert__draft {
+    display: none;
+  }
+}
+
+/* ---------- GitHub ---------- */
+.ghprofile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.ghprofile img {
+  border-radius: 50%;
+  border: 1px solid var(--line-2);
+}
+.ghprofile b {
+  font-size: 16px;
+  display: block;
+}
+.ghstats {
+  display: flex;
+  gap: 16px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--dim);
+}
+.ghstats b {
+  color: var(--cyan-hi);
+  font-size: 15px;
+}
+
+/* ---------- S.OWL AI ---------- */
+.aihero {
+  text-align: center;
+}
+.aihero__owl {
+  font-size: 40px;
+}
+.aihero h2 {
+  font-size: 23px;
+  margin-top: 6px;
+}
+.aihero p {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.aimode {
+  display: inline-block;
+  margin-top: 12px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  padding: 3px 11px;
+  color: var(--dim);
+}
+.aimode.on {
+  color: var(--lime);
+  border-color: rgba(163, 230, 53, 0.4);
+  background: rgba(163, 230, 53, 0.06);
+}
+.aiform {
+  display: flex;
+  gap: 8px;
+  margin: 18px auto 0;
+  max-width: 560px;
+}
+.aiform .mctl {
+  flex: 1;
+}
+.aisamples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  margin-top: 12px;
+}
+.aiq {
+  font-size: 14px;
+  color: var(--cyan-hi);
+  border-left: 2px solid var(--cyan);
+  padding-left: 12px;
+  margin-bottom: 14px;
+}
+.aianswer {
+  font-size: 14.5px;
+  line-height: 1.8;
+  color: var(--text);
+  white-space: pre-wrap;
+}
+
+/* ---------- 공모전 ---------- */
+.bookmark {
+  border: 0;
+  background: none;
+  color: var(--dim);
+  font-size: 17px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 2px;
+}
+.bookmark:hover,
+.bookmark.on {
+  color: #fbbf24;
+}

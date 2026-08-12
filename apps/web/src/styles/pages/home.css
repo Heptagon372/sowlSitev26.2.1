@@ -1,0 +1,290 @@
+/* ---------- 홈 = 신청 페이지 ---------- */
+.hero {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 104px 22px 58px;
+  position: relative;
+}
+.hero__title {
+  margin-top: 16px;
+  font-size: clamp(3.3rem, 12.5vw, 8.2rem);
+  font-weight: 900;
+  letter-spacing: -0.055em;
+  line-height: 0.86;
+}
+.hero__title .l1 {
+  display: block;
+  color: #fff;
+  text-shadow: 0 0 46px rgba(255, 255, 255, 0.3);
+}
+.hero__title .l2 {
+  display: block;
+  position: relative;
+}
+.hero__title .l2 .blur {
+  position: absolute;
+  inset: 0;
+  color: var(--cyan);
+  filter: blur(30px);
+  opacity: 0.55;
+  animation: pulse 3.6s ease-in-out infinite;
+}
+.hero__title .l2 .real {
+  position: relative;
+  background: linear-gradient(180deg, #fff 18%, var(--cyan-hi) 62%, var(--cyan));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 18px rgba(34, 211, 238, 0.55));
+}
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.75;
+  }
+}
+.hero__tag {
+  margin: 20px auto 0;
+  max-width: 640px;
+  font-size: clamp(1rem, 2.5vw, 1.32rem);
+  color: var(--muted);
+  font-weight: 300;
+  font-style: italic;
+}
+.hero__tag b {
+  font-weight: 700;
+  font-style: normal;
+  background: linear-gradient(94deg, var(--cyan-hi), var(--violet));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.hero__meta {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+.hero__cta {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.hero__alt {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--dim);
+}
+.hero__alt a {
+  color: var(--cyan);
+  border-bottom: 1px dashed rgba(34, 211, 238, 0.45);
+  padding-bottom: 1px;
+}
+.hero__alt a:hover {
+  color: var(--cyan-hi);
+  border-bottom-style: solid;
+}
+.scroll-hint {
+  position: absolute;
+  bottom: 26px;
+  left: 50%;
+  translate: -50% 0;
+  opacity: 0.35;
+  animation: bob 2.2s ease-in-out infinite;
+}
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(9px);
+  }
+}
+
+/* 히어로 안 카운트다운 간격 보정 */
+.hero .cd {
+  margin-top: 30px;
+}
+.hero .cd + .hero__meta {
+  margin-top: 24px;
+}
+/* 세로가 짧은 화면 — 카운트다운까지 첫 화면에 다 보이게 압축 */
+@media (max-height: 840px) {
+  .hero {
+    padding-top: 92px;
+  }
+  .hero__title {
+    font-size: clamp(3rem, 10.5vw, 6.4rem);
+  }
+  .hero__tag {
+    margin-top: 14px;
+  }
+  .hero__meta {
+    display: none; /* gen·period·room 필은 카운트다운·배지와 중복 */
+  }
+  .hero .cd {
+    margin-top: 24px;
+  }
+  .hero .cd__card {
+    font-size: clamp(1.8rem, 5.4vw, 2.7rem);
+    padding: 13px 11px;
+  }
+  .hero .cd__sep {
+    font-size: clamp(1.8rem, 5.4vw, 2.7rem);
+    height: calc(1em + 26px);
+    padding: 13px 0;
+  }
+  .hero__cta {
+    margin-top: 24px;
+  }
+}
+
+/* 피날레 D-day 한 줄 */
+.finale__dday {
+  margin-top: 14px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--cyan);
+  text-shadow: 0 0 18px rgba(34, 211, 238, 0.35);
+}
+.finale__dday:empty {
+  display: none;
+}
+
+/* ---------- 자랑 스트립 (STATS) ---------- */
+.brag {
+  padding: 26px 0 8px;
+}
+.brag__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.brag__card {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  padding: 26px 22px 22px;
+  background: rgba(8, 10, 15, 0.6);
+  border: 1px solid var(--line);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.35s, box-shadow 0.35s;
+}
+.brag__card:hover {
+  transform: translateY(-5px);
+  border-color: color-mix(in srgb, var(--bc) 55%, transparent);
+  box-shadow: 0 26px 52px -32px color-mix(in srgb, var(--bc) 90%, transparent);
+}
+.brag__card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--bc), transparent);
+  opacity: 0.8;
+}
+.brag__num {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(1.9rem, 4.4vw, 2.8rem);
+  letter-spacing: -0.05em;
+  color: var(--bc);
+  filter: drop-shadow(0 0 16px color-mix(in srgb, var(--bc) 55%, transparent));
+  font-variant-numeric: tabular-nums;
+}
+.brag__lb {
+  display: block;
+  margin-top: 7px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+.b1 {
+  --bc: var(--cyan);
+}
+.b2 {
+  --bc: var(--lime);
+}
+.b3 {
+  --bc: var(--magenta);
+}
+.b4 {
+  --bc: var(--violet);
+}
+.brag__note {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+.brag__note a {
+  color: var(--lime);
+  border-bottom: 1px dashed rgba(163, 230, 53, 0.4);
+  margin-left: 8px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+}
+.brag__note a:hover {
+  color: #d3f79b;
+}
+
+/* ---------- 신청 레이아웃 ---------- */
+.apply {
+  display: grid;
+  grid-template-columns: minmax(0, 1.34fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+.side {
+  position: sticky;
+  top: 96px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: calc(100svh - 116px);
+  overflow: hidden;
+}
+.side > .term {
+  flex: 1 1 auto;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+}
+.side > .mini {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 1020px) {
+  .apply {
+    grid-template-columns: 1fr;
+  }
+  .side {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+  .side > .term {
+    display: block;
+  }
+}
+@media (max-width: 760px) {
+  .brag__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

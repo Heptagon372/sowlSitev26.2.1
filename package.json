@@ -1,0 +1,28 @@
+{
+  "name": "sowl-website",
+  "private": true,
+  "version": "1.0.0",
+  "description": "SLEEPY OWL(S.OWL) — 성공회대학교 IT 동아리 15기 모집 웹사이트",
+  "scripts": {
+    "dev": "node tools/launcher.mjs",
+    "sowl": "node tools/launcher.mjs",
+    "push": "node tools/git-push.mjs",
+    "dev:raw": "pnpm --filter @sowl/shared build && concurrently -k -n db,api,web -c blue,green,cyan \"pnpm --filter @sowl/api db:local\" \"pnpm --filter @sowl/api start:dev\" \"pnpm --filter @sowl/web dev\"",
+    "build": "pnpm --filter @sowl/shared build && pnpm --filter @sowl/api build && pnpm --filter @sowl/web build",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "argon2",
+      "@prisma/client",
+      "@prisma/engines",
+      "prisma",
+      "embedded-postgres",
+      "esbuild"
+    ]
+  },
+  "packageManager": "pnpm@10.34.5"
+}

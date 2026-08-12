@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: sowl-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: sowl
+      POSTGRES_PASSWORD: sowl
+      POSTGRES_DB: sowl
+    ports:
+      - "5432:5432"
+    volumes:
+      - sowl-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sowl -d sowl"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  sowl-pgdata:

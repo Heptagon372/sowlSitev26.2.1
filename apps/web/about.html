@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>소개 · 동아리방 · 인프라 | SLEEPY OWL</title>
+<meta name="description" content="성공회대학교 IT 동아리 SLEEPY OWL 소개 — 나눔관 지하 1층 동아리방, 서버랙과 자체 서버 인프라." />
+<meta name="theme-color" content="#050608" />
+<link rel="icon" href="/favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<!-- 첫 페인트용 최소 스타일 — 나머지는 JS 모듈이 불러온다 (tools/gen-pages.mjs가 관리) -->
+<style data-critical>
+  :root{color-scheme:dark}
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:88px;-webkit-text-size-adjust:100%}
+  body{margin:0;background:#050608;color:#e8eef7;font-size:16px;line-height:1.6;
+    overflow-x:hidden;-webkit-font-smoothing:antialiased;
+    font-family:'Pretendard Variable',Pretendard,Inter,-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif}
+  img{max-width:100%;display:block}
+  a{color:inherit;text-decoration:none}
+  h1,h2,h3,h4{margin:0;line-height:1.12;letter-spacing:-.03em;font-weight:800}
+  p{margin:0}
+  ul{margin:0;padding:0;list-style:none}
+  .bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .page{position:relative;z-index:1}
+  .wrap{max-width:1180px;margin-inline:auto;padding-inline:22px}
+</style>
+<!-- gen:css 진짜 CSS — <link>는 렌더 블로킹이라 페이지 전환 FOUC가 없다 (tools/gen-pages.mjs가 관리) -->
+<link rel="stylesheet" href="/src/styles/tokens.css" />
+<link rel="stylesheet" href="/src/styles/base.css" />
+<link rel="stylesheet" href="/src/styles/components.css" />
+<link rel="stylesheet" href="/src/styles/pages/about.css" />
+<!-- /gen:css -->
+</head>
+<body>
+
+<div class="bg-layer" aria-hidden="true">
+  <div class="bg-glow a"></div><div class="bg-glow b"></div><div class="bg-glow c"></div>
+  <div class="bg-grid"></div><div class="bg-scan"></div><div class="bg-noise"></div>
+</div>
+
+<div class="page">
+
+<div id="nav"></div>
+
+<main>
+<!-- ===================== 소형 히어로 ===================== -->
+<header class="about-hero">
+  <div class="wrap">
+    <div class="sec__head rv">
+      <span class="sec__eyebrow">// Our Nest</span>
+      <h1 class="sec__title">코드로 둥지를 짓고 탐구하며 밤을 지킨다</h1>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== 동아리방 ===================== -->
+<section class="sec" id="room" style="padding-top:20px">
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="rv">
+        <h2>우리에겐 실제<br /><span class="m">'둥지'</span>가 있습니다</h2>
+        <p class="lead">성공회대학교 나눔관 지하 1층, S.OWL 전용 동아리방.</p>
+        <p>공강에도 시험기간에도 언제든 모여 코딩하고 때로는 쉬어갈 수 있습니다. 화면 너머가 아니라 옆자리에서 함께 막히고 함께 뚫는 개발자 커뮤니티입니다.</p>
+      </div>
+      <div class="room rv" id="roomCard">
+        <img src="/img/soul_room.png" alt="S.OWL 동아리방 — 나눔관 지하 1층" />
+        <div class="room__glare" aria-hidden="true"></div>
+        <div class="room__ov">
+          <span class="room__tag">S.OWL ROOM · 나눔관 B1</span>
+          <ul class="room__list">
+            <li><i>#</i> PC · 프린터 · 냉장고 · 간식</li>
+            <li><i>#</i> 전공 도서 대여 &amp; 인강 지원</li>
+            <li><i>#</i> 고성능 개발 환경 제공</li>
+            <li><i>#</i> 24시간 자유 출입</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 인프라 자랑 ===================== -->
+<section class="sec" id="infra">
+  <div class="wrap">
+    <div class="sec__head center rv">
+      <span class="sec__eyebrow">// Infrastructure</span>
+      <h2 class="sec__title">"우리는 서버를 빌리지 않고, 세웁니다."</h2>
+      <p class="sec__desc">학교 동아리방에서 실물 서버랙을 직접 운영합니다. 배포가 처음이어도, 여기서는 진짜 서버에 올려볼 수 있습니다.</p>
+    </div>
+
+    <div class="infra__cards">
+      <article class="infra__card i1 rv">
+        <span class="tag">RACK</span>
+        <h3>서버랙 보유</h3>
+        <p>동아리방에 실물 랙을 운영합니다. 부원 프로젝트를 직접 배포·운영하며 인프라를 몸으로 배웁니다.</p>
+      </article>
+      <article class="infra__card i2 rv">
+        <span class="tag">SELF-HOSTED</span>
+        <h3>자체 서버 운영</h3>
+        <p>학습용 VM, CI 러너, 개인 프로젝트 호스팅까지 — 부원이라면 누구나 쓸 수 있는 우리만의 컴퓨팅 자원입니다.</p>
+        <!-- 서버 대수·사양은 실제 값 확인 필요 -->
+      </article>
+      <article class="infra__card i3 rv">
+        <span class="tag">MEMBERS</span>
+        <h3><span id="infraMembers">-</span>명의 부엉이</h3>
+        <p><span id="infraGen">15</span>기 기준 활동 인원. 밤을 지키는 부엉이들이 이 인프라 위에서 함께 만들고 있습니다.</p>
+      </article>
+    </div>
+
+    <div class="rack rv" aria-hidden="true">
+      <div class="rack__frame">
+        <div class="rack__title">S.OWL RACK — B1 NANUM</div>
+        <div class="ru"><span class="led"></span><span class="name">gateway</span><span class="vents"></span><span class="u">1U</span></div>
+        <div class="ru"><span class="led c"></span><span class="name">ci-runner</span><span class="vents"></span><span class="u">1U</span></div>
+        <div class="ru"><span class="led m"></span><span class="name">vm-host-01</span><span class="vents"></span><span class="u">2U</span></div>
+        <div class="ru"><span class="led"></span><span class="name">vm-host-02</span><span class="vents"></span><span class="u">2U</span></div>
+        <div class="ru"><span class="led c"></span><span class="name">storage</span><span class="vents"></span><span class="u">2U</span></div>
+        <div class="ru"><span class="led m"></span><span class="name">switch</span><span class="vents"></span><span class="u">1U</span></div>
+      </div>
+    </div>
+    <p class="infra__note rv">* 장비 구성 예시 — 실제 서버 대수·사양은 동아리 확인 후 업데이트 예정</p>
+  </div>
+</section>
+
+<!-- ===================== 연혁 ===================== -->
+<section class="sec" id="history">
+  <div class="wrap">
+    <div class="sec__head center rv">
+      <span class="sec__eyebrow">// History</span>
+      <h2 class="sec__title">1기부터 15기까지</h2>
+    </div>
+    <div class="timeline rv">
+      <div class="tl">
+        <span class="tl__gen">1기</span>
+        <p class="tl__txt"><b>S.OWL 창립</b> — 성공회대학교에 밤을 지키는 부엉이들의 둥지가 생기다.</p>
+      </div>
+      <div class="tl">
+        <span class="tl__gen">—</span>
+        <p class="tl__txt">세미나·해커톤·스터디를 거듭하며 <b>누적 100+ 프로젝트</b>를 쌓아올리다.</p>
+      </div>
+      <div class="tl">
+        <span class="tl__gen">—</span>
+        <p class="tl__txt">동아리방에 <b>서버랙을 들이고 자체 서버 운영</b>을 시작하다.</p>
+      </div>
+      <div class="tl">
+        <span class="tl__gen">14기</span>
+        <p class="tl__txt">회장 이민용 · 부회장 송대원 체제로 <b>부원 35명</b> 규모로 성장.</p>
+      </div>
+      <div class="tl hl">
+        <span class="tl__gen">15기</span>
+        <p class="tl__txt"><b>지금, 새로운 부엉이를 기다립니다.</b> <a href="/apply.html" style="color:var(--lime);border-bottom:1px dashed rgba(163,230,53,.4)">지원하러 가기 ↗</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<div id="footer"></div>
+
+</div>
+
+<script type="module" src="/src/pages/about.ts"></script>
+</body>
+</html>

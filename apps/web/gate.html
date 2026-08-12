@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>회원 전용 공간 | SLEEPY OWL</title>
+<meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#050608" />
+<link rel="icon" href="/favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<!-- 첫 페인트용 최소 스타일 — 나머지는 JS 모듈이 불러온다 (tools/gen-pages.mjs가 관리) -->
+<style data-critical>
+  :root{color-scheme:dark}
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:88px;-webkit-text-size-adjust:100%}
+  body{margin:0;background:#050608;color:#e8eef7;font-size:16px;line-height:1.6;
+    overflow-x:hidden;-webkit-font-smoothing:antialiased;
+    font-family:'Pretendard Variable',Pretendard,Inter,-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif}
+  img{max-width:100%;display:block}
+  a{color:inherit;text-decoration:none}
+  h1,h2,h3,h4{margin:0;line-height:1.12;letter-spacing:-.03em;font-weight:800}
+  p{margin:0}
+  ul{margin:0;padding:0;list-style:none}
+  .bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .page{position:relative;z-index:1}
+  .wrap{max-width:1180px;margin-inline:auto;padding-inline:22px}
+</style>
+<!-- gen:css 진짜 CSS — <link>는 렌더 블로킹이라 페이지 전환 FOUC가 없다 (tools/gen-pages.mjs가 관리) -->
+<link rel="stylesheet" href="/src/styles/tokens.css" />
+<link rel="stylesheet" href="/src/styles/base.css" />
+<link rel="stylesheet" href="/src/styles/components.css" />
+<link rel="stylesheet" href="/src/styles/pages/auth.css" />
+<!-- /gen:css -->
+</head>
+<body>
+
+<div class="bg-layer" aria-hidden="true">
+  <div class="bg-glow a"></div><div class="bg-glow b"></div><div class="bg-glow c"></div>
+  <div class="bg-grid"></div><div class="bg-scan"></div><div class="bg-noise"></div>
+</div>
+
+<div class="page">
+
+<div id="nav"></div>
+
+<main class="gate-main">
+  <div class="term gate-card">
+    <div class="term__bar">
+      <span class="term__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="term__path mono">~/sowl/members — access.sh</span>
+      <span class="term__tag closed">LOCKED</span>
+    </div>
+    <div class="term__body mgate__body">
+      <img class="mgate__owl" src="/img/soul_logo.png" alt="" width="72" height="72" />
+      <h3>S.OWL에 회원으로 오세요!</h3>
+      <p>여기는 S.OWL 부원만 들어올 수 있는 공간입니다.<br />
+      스터디 자료, 프로젝트, 세미나 기록이 전부 여기 있어요.</p>
+      <p class="mgate__dday mono" id="gateDday"></p>
+      <div class="mgate__btns">
+        <a class="btn btn--primary" href="/apply.html">
+          <span class="ring" aria-hidden="true"></span>
+          <span class="inner"><span class="label">지원하러 가기</span></span>
+        </a>
+        <a class="btn btn--line" href="/">둘러보기</a>
+      </div>
+      <p class="mgate__login" id="gateLogin"></p>
+    </div>
+  </div>
+</main>
+
+</div>
+
+<script type="module" src="/src/pages/gate.ts"></script>
+</body>
+</html>

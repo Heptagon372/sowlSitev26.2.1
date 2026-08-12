@@ -1,0 +1,752 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Application {
+  id            String   @id @default(cuid())
+  generation    Int
+  name          String
+  studentId     String
+  department    String
+  grade         String
+  phone         String
+  email         String
+  interests     String[]
+  experience    String
+  availableDays String[]
+  motivation    String   @db.Text
+  wantToBuild   String?  @db.Text
+  agreedAt      DateTime
+  ipHash        String? // 중복 제출 감지용 해시 (원본 IP 저장 금지)
+  createdAt     DateTime @default(now())
+  userId        String? // 로그인 상태로 지원한 경우 연결
+  user          User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@unique([generation, studentId]) // 같은 기수 같은 학번은 1건 — 재제출 시 갱신
+  @@index([generation, createdAt])
+}
+
+/* ============================================================
+   회원 시스템 (설계도 ②)
+   ============================================================ */
+
+enum Role {
+  GUEST
+  MEMBER
+  ADMIN
+}
+
+model User {
+  id           String    @id @default(cuid())
+  studentId    String    @unique // 로그인 ID (숫자 8~10자리)
+  name         String
+  passwordHash String // Argon2id
+  email        String?
+  role         Role      @default(GUEST)
+  generation   Int? // 기수 (승격 시 관리자가 지정)
+  department   String? // 학과 (회원 목록 필터용, 본인 입력)
+  avatarUrl    String?
+  bio          String?
+  techStack    String[]
+  githubLogin  String?
+  points       Int       @default(0)
+  lockedUntil  DateTime?
+  failedLogins Int       @default(0)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  applications Application[]
+  auditLogs    AuditLog[]    @relation("actor")
+  notices      Notice[]
+  noticeReads  NoticeRead[]
+  posts        Post[]
+  comments     Comment[]
+  postLikes    PostLike[]
+  files        SharedFile[]
+
+  // 2차
+  studyMemberships StudyMember[]
+  ledStudies       Study[]              @relation("studyLeader")
+  seminars         Seminar[]            @relation("speaker")
+  attendances      SeminarAttendance[]
+  submissions      MissionSubmission[]
+  projectRoles     ProjectMember[]
+  ownedProjects    Project[]            @relation("projectOwner")
+  teamPosts        TeamPost[]
+  teamApplications TeamApplication[]
+  questions        Question[]
+  answers          Answer[]
+  polls            Poll[]               @relation("pollAuthor")
+  pollVotes        PollVote[]
+  pointLogs        PointLog[]
+
+  // 3차
+  eventSignups     EventSignup[]
+  assignedTasks    ProjectTask[]         @relation("taskAssignee")
+  hackathonTeams   HackathonTeamMember[]
+  chatMessages     ChatMessage[]
+  duesPayments     DuesPayment[]
+  contestBookmarks ContestBookmark[]
+  certificates     Certificate[]
+
+  @@index([role])
+}
+
+model MemberWhitelist {
+  studentId  String   @id // 관리자가 등록한 학번
+  generation Int?
+  note       String?
+  addedBy    String
+  addedAt    DateTime @default(now())
+}
+
+model RefreshToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
+
+model AccessLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  studentId String? // 존재하지 않는 계정 로그인 시도 기록용
+  action    String // LOGIN_SUCCESS | LOGIN_FAIL | LOGOUT | LOCKED | MEMBER_DENIED | SIGNUP
+  path      String?
+  ipHash    String
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([userId])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String
+  actor      User     @relation("actor", fields: [actorId], references: [id])
+  action     String // ROLE_CHANGE | WHITELIST_ADD | WHITELIST_REMOVE | SETTINGS_UPDATE | DB_UNLOCK | EXPORT ...
+  targetType String?
+  targetId   String?
+  reason     String?
+  before     Json?
+  after      Json?
+  ipHash     String
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([actorId])
+}
+
+model RackDevice {
+  id         String    @id @default(cuid())
+  name       String
+  kind       String // SERVER | SWITCH | UPS | NAS | ETC
+  startUnit  Int
+  unitSize   Int       @default(1)
+  status     String    @default("OK") // OK | MAINTENANCE | OFFLINE
+  purpose    String?
+  ownerId    String?
+  healthUrl  String?
+  lastSeenAt DateTime?
+  note       String?
+  updatedAt  DateTime  @updatedAt
+}
+
+/* ------------------------------------------------------------
+   회원 전용 공간 1차 페이지 (공지 · 일정 · 게시판 · 자료실)
+   ------------------------------------------------------------ */
+
+model Notice {
+  id        String       @id @default(cuid())
+  title     String
+  body      String       @db.Text
+  pinned    Boolean      @default(false)
+  authorId  String
+  author    User         @relation(fields: [authorId], references: [id])
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  reads     NoticeRead[]
+
+  @@index([pinned, createdAt])
+}
+
+model NoticeRead {
+  noticeId String
+  notice   Notice   @relation(fields: [noticeId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  readAt   DateTime @default(now())
+
+  @@id([noticeId, userId])
+}
+
+model ClubEvent {
+  id          String        @id @default(cuid())
+  title       String
+  description String?
+  location    String?
+  startsAt    DateTime
+  endsAt      DateTime?
+  allDay      Boolean       @default(false)
+  kind        String? // SEMINAR | STUDY | HACKATHON | ETC
+  createdBy   String?
+  createdAt   DateTime      @default(now())
+  // 행사 참가 신청 (3차) — signupOpen이 켜져 있을 때만 신청을 받는다
+  signupOpen  Boolean       @default(false)
+  capacity    Int? // null = 정원 무제한
+  signups     EventSignup[]
+
+  @@index([startsAt])
+}
+
+model EventSignup {
+  eventId   String
+  event     ClubEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  note      String?
+  createdAt DateTime  @default(now())
+
+  @@id([eventId, userId])
+  @@index([userId])
+}
+
+model Post {
+  id        String     @id @default(cuid())
+  title     String
+  body      String     @db.Text
+  authorId  String
+  author    User       @relation(fields: [authorId], references: [id])
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  comments  Comment[]
+  likes     PostLike[]
+
+  @@index([createdAt])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  body      String   @db.Text
+  createdAt DateTime @default(now())
+
+  @@index([postId])
+}
+
+model PostLike {
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([postId, userId])
+}
+
+model SharedFile {
+  id         String   @id @default(cuid())
+  category   String   @default("기타")
+  name       String // 표시 이름 (원본 파일명)
+  storedName String // 디스크 저장명 (충돌 방지)
+  size       Int
+  mime       String
+  uploaderId String
+  uploader   User     @relation(fields: [uploaderId], references: [id])
+  downloads  Int      @default(0)
+  createdAt  DateTime @default(now())
+  // 스터디 자료실 — 값이 있으면 그 스터디 전용 자료, 없으면 공용 자료실
+  studyId    String?
+  study      Study?   @relation(fields: [studyId], references: [id], onDelete: Cascade)
+
+  @@index([category, createdAt])
+  @@index([studyId, createdAt])
+}
+
+/* ============================================================
+   회원 공간 2차 — 학습(스터디·세미나·과제) · 프로젝트 · 커뮤니티 · 기록
+   ============================================================ */
+
+model Study {
+  id          String        @id @default(cuid())
+  title       String
+  description String        @db.Text
+  topic       String? // 언어/CS/프로젝트 등 자유 태그
+  status      String        @default("RECRUITING") // RECRUITING | ONGOING | DONE
+  schedule    String? // '매주 화 19:00' 같은 자유 문자열
+  maxMembers  Int           @default(8)
+  generation  Int?
+  leaderId    String
+  leader      User          @relation("studyLeader", fields: [leaderId], references: [id])
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  members     StudyMember[]
+  weeks       StudyWeek[]
+  files       SharedFile[]
+
+  @@index([status, createdAt])
+}
+
+model StudyMember {
+  studyId  String
+  study    Study    @relation(fields: [studyId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  joinedAt DateTime @default(now())
+
+  @@id([studyId, userId])
+  @@index([userId])
+}
+
+model StudyWeek {
+  id      String    @id @default(cuid())
+  studyId String
+  study   Study     @relation(fields: [studyId], references: [id], onDelete: Cascade)
+  weekNo  Int
+  title   String
+  content String?   @db.Text
+  meetAt  DateTime?
+  done    Boolean   @default(false)
+
+  @@unique([studyId, weekNo])
+}
+
+model Seminar {
+  id          String              @id @default(cuid())
+  title       String
+  description String?             @db.Text
+  speakerId   String? // 발표자 신청 전에는 비어 있다
+  speaker     User?               @relation("speaker", fields: [speakerId], references: [id], onDelete: SetNull)
+  startsAt    DateTime
+  location    String?
+  slideUrl    String?
+  points      Int                 @default(5) // 출석 시 지급 포인트
+  // 출석 코드 — 발표자/관리자가 열면 생성, 만료 시각까지만 유효
+  attendCode  String?
+  codeOpenAt  DateTime?
+  codeEndsAt  DateTime?
+  createdAt   DateTime            @default(now())
+  attendances SeminarAttendance[]
+
+  @@index([startsAt])
+}
+
+model SeminarAttendance {
+  seminarId String
+  seminar   Seminar  @relation(fields: [seminarId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  checkedAt DateTime @default(now())
+
+  @@id([seminarId, userId])
+  @@index([userId])
+}
+
+model Mission {
+  id          String              @id @default(cuid())
+  title       String
+  body        String              @db.Text
+  dueAt       DateTime
+  points      Int                 @default(10)
+  createdBy   String
+  createdAt   DateTime            @default(now())
+  submissions MissionSubmission[]
+
+  @@index([dueAt])
+}
+
+model MissionSubmission {
+  id          String    @id @default(cuid())
+  missionId   String
+  mission     Mission   @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content     String    @db.Text
+  link        String?
+  submittedAt DateTime  @default(now())
+  feedback    String?   @db.Text
+  score       Int?
+  reviewedBy  String?
+  reviewedAt  DateTime?
+
+  @@unique([missionId, userId])
+  @@index([userId])
+}
+
+model Project {
+  id           String          @id @default(cuid())
+  name         String
+  summary      String
+  description  String?         @db.Text
+  status       String          @default("ONGOING") // PLANNING | ONGOING | DONE | ARCHIVED
+  techStack    String[]
+  repoUrl      String?
+  demoUrl      String?
+  thumbnailUrl String?
+  generation   Int?
+  ownerId      String
+  owner        User            @relation("projectOwner", fields: [ownerId], references: [id])
+  startedAt    DateTime?
+  endedAt      DateTime?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  members      ProjectMember[]
+  teamPosts    TeamPost[]
+  // 3차 — 포트폴리오 공개 여부 + 칸반
+  isPublic     Boolean         @default(false)
+  tasks        ProjectTask[]
+  milestones   Milestone[]
+
+  @@index([status, createdAt])
+}
+
+model Milestone {
+  id        String        @id @default(cuid())
+  projectId String
+  project   Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  title     String
+  dueAt     DateTime?
+  done      Boolean       @default(false)
+  createdAt DateTime      @default(now())
+  tasks     ProjectTask[]
+
+  @@index([projectId])
+}
+
+model ProjectTask {
+  id          String     @id @default(cuid())
+  projectId   String
+  project     Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  title       String
+  body        String?    @db.Text
+  status      String     @default("TODO") // TODO | DOING | REVIEW | DONE
+  order       Int        @default(0)
+  assigneeId  String?
+  assignee    User?      @relation("taskAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  milestoneId String?
+  milestone   Milestone? @relation(fields: [milestoneId], references: [id], onDelete: SetNull)
+  dueAt       DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([projectId, status, order])
+}
+
+model Hackathon {
+  id          String          @id @default(cuid())
+  round       Int
+  title       String
+  theme       String?
+  description String?         @db.Text
+  startsAt    DateTime
+  endsAt      DateTime
+  location    String?
+  status      String          @default("PLANNED") // PLANNED | OPEN | ONGOING | DONE
+  createdAt   DateTime        @default(now())
+  teams       HackathonTeam[]
+
+  @@index([startsAt])
+}
+
+model HackathonTeam {
+  id          String                @id @default(cuid())
+  hackathonId String
+  hackathon   Hackathon             @relation(fields: [hackathonId], references: [id], onDelete: Cascade)
+  name        String
+  idea        String?               @db.Text
+  repoUrl     String?
+  demoUrl     String?
+  submittedAt DateTime?
+  score       Int?
+  rank        Int?
+  createdAt   DateTime              @default(now())
+  members     HackathonTeamMember[]
+
+  @@index([hackathonId])
+}
+
+model HackathonTeamMember {
+  teamId   String
+  team     HackathonTeam @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  joinedAt DateTime      @default(now())
+
+  @@id([teamId, userId])
+  @@index([userId])
+}
+
+model ChatRoom {
+  id          String        @id @default(cuid())
+  slug        String        @unique
+  name        String
+  description String?
+  createdAt   DateTime      @default(now())
+  messages    ChatMessage[]
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  roomId    String
+  room      ChatRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  body      String   @db.Text
+  createdAt DateTime @default(now())
+
+  @@index([roomId, createdAt])
+}
+
+model DuesTerm {
+  id        String        @id @default(cuid())
+  name      String        @unique // '2026-1학기'
+  amount    Int
+  dueDate   DateTime
+  createdAt DateTime      @default(now())
+  payments  DuesPayment[]
+  expenses  Expense[]
+}
+
+model DuesPayment {
+  termId   String
+  term     DuesTerm  @relation(fields: [termId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  paidAt   DateTime?
+  amount   Int       @default(0)
+  method   String? // CASH | TRANSFER | ETC
+  note     String?
+
+  @@id([termId, userId])
+  @@index([userId])
+}
+
+/** 운영비 사용 내역 — 부원 전체에게 공개된다 */
+model Expense {
+  id        String    @id @default(cuid())
+  termId    String?
+  term      DuesTerm? @relation(fields: [termId], references: [id], onDelete: SetNull)
+  title     String
+  amount    Int
+  category  String    @default("기타") // 간식 | 장비 | 행사 | 서버 | 기타
+  spentAt   DateTime
+  note      String?
+  createdBy String
+  createdAt DateTime  @default(now())
+
+  @@index([spentAt])
+}
+
+model Contest {
+  id        String            @id @default(cuid())
+  title     String
+  url       String            @unique
+  host      String?
+  category  String?
+  prize     String?
+  summary   String?           @db.Text
+  deadline  DateTime?
+  source    String            @default("MANUAL") // MANUAL | FEED
+  feedId    String?
+  createdAt DateTime          @default(now())
+  bookmarks ContestBookmark[]
+
+  @@index([deadline])
+}
+
+model ContestBookmark {
+  contestId String
+  contest   Contest  @relation(fields: [contestId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([contestId, userId])
+  @@index([userId])
+}
+
+/**
+ * 공모전 수집 소스 — 임의의 사이트를 긁지 않고 RSS/Atom 피드만 읽는다.
+ * (설계도 ② §15: 크롤링 대상·robots.txt 미확인 상태이므로 공개 피드로 한정)
+ */
+model ContestFeed {
+  id            String    @id @default(cuid())
+  name          String
+  url           String    @unique
+  enabled       Boolean   @default(true)
+  lastFetchedAt DateTime?
+  lastError     String?
+  createdAt     DateTime  @default(now())
+}
+
+/** GitHub 공개 활동 캐시 — API 호출 한도(비인증 60회/시간)를 아끼기 위해 */
+model GithubCache {
+  login     String   @id
+  data      Json
+  fetchedAt DateTime @default(now())
+}
+
+model Certificate {
+  id         String   @id @default(cuid())
+  code       String   @unique // 확인용 발급 번호
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  generation Int?
+  summary    Json // 발급 시점의 활동 요약 스냅샷
+  issuedAt   DateTime @default(now())
+
+  @@index([userId])
+}
+
+model ProjectMember {
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      String   @default("MEMBER") // 자유 문자열: 백엔드 / 디자인 등
+  joinedAt  DateTime @default(now())
+
+  @@id([projectId, userId])
+  @@index([userId])
+}
+
+model TeamPost {
+  id           String            @id @default(cuid())
+  title        String
+  body         String            @db.Text
+  positions    String[] // 모집 포지션
+  techStack    String[]
+  status       String            @default("OPEN") // OPEN | CLOSED
+  projectId    String?
+  project      Project?          @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  authorId     String
+  author       User              @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt    DateTime          @default(now())
+  applications TeamApplication[]
+
+  @@index([status, createdAt])
+}
+
+model TeamApplication {
+  id        String   @id @default(cuid())
+  postId    String
+  post      TeamPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  position  String?
+  message   String   @db.Text
+  status    String   @default("PENDING") // PENDING | ACCEPTED | REJECTED
+  createdAt DateTime @default(now())
+
+  @@unique([postId, userId])
+  @@index([userId])
+}
+
+model Question {
+  id               String   @id @default(cuid())
+  title            String
+  body             String   @db.Text
+  tags             String[]
+  views            Int      @default(0)
+  acceptedAnswerId String?
+  authorId         String
+  author           User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt        DateTime @default(now())
+  answers          Answer[]
+
+  @@index([createdAt])
+}
+
+model Answer {
+  id         String   @id @default(cuid())
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  authorId   String
+  author     User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  body       String   @db.Text
+  createdAt  DateTime @default(now())
+
+  @@index([questionId])
+}
+
+model Poll {
+  id          String       @id @default(cuid())
+  title       String
+  description String?
+  multiple    Boolean      @default(false) // 복수 선택 허용
+  anonymous   Boolean      @default(true) // 누가 무엇을 골랐는지 화면에 보이지 않게
+  closesAt    DateTime?
+  authorId    String
+  author      User         @relation("pollAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt   DateTime     @default(now())
+  options     PollOption[]
+  votes       PollVote[]
+
+  @@index([createdAt])
+}
+
+model PollOption {
+  id    String     @id @default(cuid())
+  pollId String
+  poll  Poll       @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  label String
+  order Int        @default(0)
+  votes PollVote[]
+
+  @@index([pollId])
+}
+
+model PollVote {
+  id        String     @id @default(cuid())
+  pollId    String
+  poll      Poll       @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  optionId  String
+  option    PollOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now())
+
+  @@unique([optionId, userId])
+  @@index([pollId, userId])
+}
+
+model PointLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  delta     Int
+  kind      String // SEMINAR_ATTEND | MISSION_SCORE | STUDY_JOIN | MANUAL
+  reason    String
+  refId     String?
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([createdAt])
+}
+
+model RecruitConfig {
+  id            Int      @id @default(1)
+  generation    Int
+  startsAt      DateTime
+  endsAt        DateTime
+  googleFormUrl String
+  updatedAt     DateTime @updatedAt
+}
+
+model ClubStat {
+  key   String @id // 'members' | 'servers' | 'projects' | 'hasServerRack' | 'roomLocation'
+  value String
+}

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SLEEPY OWL | 성공회대학교 IT 동아리</title>
+<meta name="description" content="성공회대학교 IT 개발 동아리 SLEEPY OWL(S.OWL). 2011년부터 15기째, 직접 서버를 세워 굴리는 사람들. 밤은 이제 시작이고, 우리의 코드는 막 깨어났다." />
+<meta name="theme-color" content="#050608" />
+<meta property="og:title" content="SLEEPY OWL — 성공회대학교 IT 동아리" />
+<meta property="og:description" content="직접 서버를 세워 굴리는 개발 동아리. 15기 신입 부원 모집 중." />
+<meta property="og:type" content="website" />
+<link rel="icon" href="/favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<!-- 첫 페인트용 최소 스타일 — 나머지는 JS 모듈이 불러온다 (tools/gen-pages.mjs가 관리) -->
+<style data-critical>
+  :root{color-scheme:dark}
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:88px;-webkit-text-size-adjust:100%}
+  body{margin:0;background:#050608;color:#e8eef7;font-size:16px;line-height:1.6;
+    overflow-x:hidden;-webkit-font-smoothing:antialiased;
+    font-family:'Pretendard Variable',Pretendard,Inter,-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif}
+  img{max-width:100%;display:block}
+  a{color:inherit;text-decoration:none}
+  h1,h2,h3,h4{margin:0;line-height:1.12;letter-spacing:-.03em;font-weight:800}
+  p{margin:0}
+  ul{margin:0;padding:0;list-style:none}
+  .bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .page{position:relative;z-index:1}
+  .wrap{max-width:1180px;margin-inline:auto;padding-inline:22px}
+</style>
+<!-- gen:css 진짜 CSS — <link>는 렌더 블로킹이라 페이지 전환 FOUC가 없다 (tools/gen-pages.mjs가 관리) -->
+<link rel="stylesheet" href="/src/styles/tokens.css" />
+<link rel="stylesheet" href="/src/styles/base.css" />
+<link rel="stylesheet" href="/src/styles/components.css" />
+<link rel="stylesheet" href="/src/styles/pages/home.css" />
+<link rel="stylesheet" href="/src/styles/pages/about.css" />
+<link rel="stylesheet" href="/src/styles/pages/landing.css" />
+<!-- /gen:css -->
+</head>
+<body>
+
+<div class="bg-layer" aria-hidden="true">
+  <div class="bg-glow a"></div><div class="bg-glow b"></div><div class="bg-glow c"></div>
+  <div class="bg-grid"></div><div class="bg-scan"></div><div class="bg-noise"></div>
+</div>
+
+<div class="page">
+
+<div id="nav"></div>
+
+<!-- ===================== 1. HERO ===================== -->
+<header class="hero" id="home">
+  <span class="badge"><span class="live"></span><span id="badgeText">소울 15기 모집중</span></span>
+
+  <h1 class="hero__title">
+    <span class="l1">SLEEPY</span>
+    <span class="l2"><span class="blur" aria-hidden="true">OWL</span><span class="real">OWL</span></span>
+  </h1>
+
+  <p class="hero__tag">밤은 이제 시작이고 <b>우리의 코드는 막 깨어났다.</b></p>
+
+  <!-- D-day 카운트다운 — 내용은 src/components/countdown.ts가 전부 그린다 -->
+  <div class="cd" id="count" role="timer" aria-label="모집 마감까지 남은 시간"></div>
+
+  <div class="hero__meta">
+    <span class="pill"><span class="k">gen</span> <b id="pillGen">-</b></span>
+    <span class="pill"><span class="k">period</span> <b id="pillPeriod">-</b></span>
+    <span class="pill"><span class="k">room</span> <b id="pillRoom">-</b></span>
+  </div>
+
+  <div class="hero__cta">
+    <div class="hero__btns">
+      <a class="btn btn--primary" id="ctaApply" href="/apply.html">
+        <span class="ring" aria-hidden="true"></span>
+        <span class="inner">
+          <span class="label" id="ctaApplyLabel">15기 지원하기</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 7l5 5-5 5M18 12H6"/></svg>
+        </span>
+      </a>
+      <a class="btn btn--line" href="#define">동아리 둘러보기</a>
+    </div>
+  </div>
+
+  <div class="scroll-hint" aria-hidden="true">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+</header>
+
+<main>
+<!-- ===================== 2. 한 줄 정의 ===================== -->
+<section class="define" id="define">
+  <div class="wrap">
+    <p class="define__txt rv">성공회대학교 IT 개발 동아리.<br />
+    2011년부터 <b id="defGen">15</b>기째, <b class="hl">직접 서버를 세워 굴리는</b> 사람들.</p>
+  </div>
+</section>
+
+<!-- ===================== 3. 자랑 스트립 ===================== -->
+<section class="brag" aria-label="S.OWL 자랑">
+  <div class="wrap">
+    <div class="brag__grid rv">
+      <div class="brag__card b1"><span class="brag__num" id="statMembers">-</span><span class="brag__lb">현재 활동 부원</span></div>
+      <div class="brag__card b2"><span class="brag__num" id="statRack">-</span><span class="brag__lb">서버랙 보유</span></div>
+      <div class="brag__card b3"><span class="brag__num">24/7</span><span class="brag__lb">동아리방 상시 개방</span></div>
+      <div class="brag__card b4"><span class="brag__num" id="statProjects">-</span><span class="brag__lb">누적 프로젝트</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 4. 활동 요약 ===================== -->
+<section class="sec" id="acts">
+  <div class="wrap">
+    <div class="sec__head center rv">
+      <span class="sec__eyebrow">// Activities</span>
+      <h2 class="sec__title">우리는 이렇게 씁니다</h2>
+      <p class="sec__desc">밤을 낭비하지 않는 네 가지 방법.</p>
+    </div>
+    <div class="actgrid">
+      <a class="actcard a1 rv" href="/activities.html#seminar">
+        <span class="actcard__num mono">01</span>
+        <h3>세미나</h3>
+        <p>내가 배운 것을 부원 앞에서 발표하고, 남이 판 삽질에서 배웁니다.</p>
+        <span class="actcard__go mono">더 보기 →</span>
+      </a>
+      <a class="actcard a2 rv" href="/activities.html#hackathon">
+        <span class="actcard__num mono">02</span>
+        <h3>해커톤</h3>
+        <p>1박 2일, 아이디어에서 데모까지. 밤새 만든 것이 아침에 돌아갑니다.</p>
+        <span class="actcard__go mono">더 보기 →</span>
+      </a>
+      <a class="actcard a3 rv" href="/activities.html#study">
+        <span class="actcard__num mono">03</span>
+        <h3>스터디</h3>
+        <p>언어·CS·프로젝트 스터디가 학기마다 열립니다. 개설도 자유.</p>
+        <span class="actcard__go mono">더 보기 →</span>
+      </a>
+      <a class="actcard a4 rv" href="/activities.html#lecture">
+        <span class="actcard__num mono">04</span>
+        <h3>번개 특강</h3>
+        <p>Git부터 배포까지 — 필요한 사람이 생기면 그날 열리는 즉석 강의.</p>
+        <span class="actcard__go mono">더 보기 →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 5. 둥지 ===================== -->
+<section class="sec" id="nest" style="padding-top:30px">
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="rv">
+        <span class="sec__eyebrow">// Our Nest</span>
+        <h2 class="sec__title" style="font-size:clamp(1.7rem,4.4vw,2.6rem)">둥지가 있습니다</h2>
+        <p class="lead" style="margin-top:14px">나눔관 지하 1층 · 24시간 개방.</p>
+        <p style="color:var(--muted);margin-top:10px">공강에도 시험기간에도 언제든 모여 코딩하고 쉬어갈 수 있는
+        S.OWL 전용 공간. 화면 너머가 아니라 옆자리에서 함께 막히고 함께 뚫습니다.</p>
+        <a class="btn btn--line" href="/about.html" style="margin-top:22px">동아리방 구경하기</a>
+      </div>
+      <div class="room rv" id="roomCard">
+        <img src="/img/soul_room.png" alt="S.OWL 동아리방 — 나눔관 지하 1층" />
+        <div class="room__glare" aria-hidden="true"></div>
+        <div class="room__ov">
+          <span class="room__tag">S.OWL ROOM · 나눔관 B1</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 6. 인프라 ===================== -->
+<section class="sec" id="infra">
+  <div class="wrap">
+    <div class="sec__head center rv">
+      <span class="sec__eyebrow">// Infrastructure</span>
+      <h2 class="sec__title">"우리는 서버를 빌리지 않고, 세웁니다."</h2>
+      <p class="sec__desc">동아리방에서 실물 서버랙을 직접 운영합니다. 배포가 처음이어도, 여기서는 진짜 서버에 올려볼 수 있습니다.</p>
+    </div>
+    <div class="rack rv" aria-hidden="true">
+      <div class="rack__frame">
+        <div class="rack__title">S.OWL RACK — B1 NANUM</div>
+        <div class="ru"><span class="led"></span><span class="name">gateway</span><span class="vents"></span><span class="u">1U</span></div>
+        <div class="ru"><span class="led c"></span><span class="name">ci-runner</span><span class="vents"></span><span class="u">1U</span></div>
+        <div class="ru"><span class="led m"></span><span class="name">vm-host-01</span><span class="vents"></span><span class="u">2U</span></div>
+        <div class="ru"><span class="led"></span><span class="name">storage</span><span class="vents"></span><span class="u">2U</span></div>
+        <div class="ru"><span class="led c"></span><span class="name">switch</span><span class="vents"></span><span class="u">1U</span></div>
+      </div>
+    </div>
+    <p class="infra__note rv" style="text-align:center"><a href="/about.html#infra" style="color:var(--lime)">장비 구성 자세히 보기 ↗</a></p>
+  </div>
+</section>
+
+<!-- ===================== 7. 회원 공간 미리보기 ===================== -->
+<section class="sec" id="memberPreview">
+  <div class="wrap">
+    <div class="sec__head center rv">
+      <span class="sec__eyebrow">// Members Only</span>
+      <h2 class="sec__title">회원이 되면 쓸 수 있는 것</h2>
+      <p class="sec__desc">부원에게만 열리는 공간이 있습니다. 잠긴 문 너머를 살짝 보여드릴게요.</p>
+    </div>
+    <div class="mpgrid">
+      <a class="mpcard rv" href="/member/index.html">
+        <div class="mpcard__shot" aria-hidden="true">
+          <div class="mpshot">
+            <i style="width:62%"></i><i style="width:84%"></i><i style="width:48%"></i>
+            <div class="mpshot__row"><b></b><b></b><b></b></div>
+            <i style="width:74%"></i><i style="width:56%"></i>
+          </div>
+        </div>
+        <div class="mpcard__lock" aria-hidden="true">🔒</div>
+        <span class="mpcard__badge">회원 전용</span>
+        <h3>대시보드</h3>
+        <p>내 일정·과제·공지를 한눈에</p>
+      </a>
+      <a class="mpcard rv" href="/member/study/study-files.html">
+        <div class="mpcard__shot" aria-hidden="true">
+          <div class="mpshot">
+            <div class="mpshot__file"></div><div class="mpshot__file"></div><div class="mpshot__file"></div>
+          </div>
+        </div>
+        <div class="mpcard__lock" aria-hidden="true">🔒</div>
+        <span class="mpcard__badge">회원 전용</span>
+        <h3>스터디 자료실</h3>
+        <p>지난 스터디·세미나 자료 전부</p>
+      </a>
+      <a class="mpcard rv" href="/member/record/points.html">
+        <div class="mpcard__shot" aria-hidden="true">
+          <div class="mpshot">
+            <div class="mpshot__bar" style="--w:92%"></div>
+            <div class="mpshot__bar" style="--w:71%"></div>
+            <div class="mpshot__bar" style="--w:55%"></div>
+            <div class="mpshot__bar" style="--w:38%"></div>
+          </div>
+        </div>
+        <div class="mpcard__lock" aria-hidden="true">🔒</div>
+        <span class="mpcard__badge">회원 전용</span>
+        <h3>포인트 랭킹</h3>
+        <p>활동할수록 쌓이는 동아리 포인트</p>
+      </a>
+      <a class="mpcard rv" href="/member/tools/ai.html">
+        <div class="mpcard__shot" aria-hidden="true">
+          <div class="mpshot">
+            <div class="mpshot__chat r"></div>
+            <div class="mpshot__chat l"></div>
+            <div class="mpshot__chat r"></div>
+          </div>
+        </div>
+        <div class="mpcard__lock" aria-hidden="true">🔒</div>
+        <span class="mpcard__badge">회원 전용</span>
+        <h3>S.OWL AI</h3>
+        <p>동아리 자료를 다 아는 어시스턴트</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 8. 카운트다운 + 최종 CTA ===================== -->
+<section class="sec" id="finale">
+  <div class="wrap" style="text-align:center">
+    <div class="sec__head center rv">
+      <span class="sec__eyebrow">// Join Us</span>
+      <h2 class="sec__title" id="finaleTitle">15기 모집이 진행 중입니다</h2>
+      <p class="finale__dday mono" id="finaleDday" aria-hidden="true"></p>
+    </div>
+    <div class="rv" style="margin-top:30px;display:flex;justify-content:center">
+      <a class="btn btn--primary" href="/apply.html">
+        <span class="ring" aria-hidden="true"></span>
+        <span class="inner">
+          <span class="label">지금 바로 지원하기</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 7l5 5-5 5M18 12H6"/></svg>
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
+</main>
+
+<div id="footer"></div>
+
+</div>
+
+<script type="module" src="/src/pages/home.ts"></script>
+</body>
+</html>

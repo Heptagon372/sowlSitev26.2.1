@@ -1,0 +1,13 @@
+/* ---------- FAQ ---------- */
+.faq-hero {
+  padding: 150px 0 10px;
+}
+.faq-cta {
+  margin-top: 46px;
+  text-align: center;
+}
+.faq-cta p {
+  color: var(--muted);
+  font-size: 14.5px;
+  margin-bottom: 16px;
+}

@@ -1,0 +1,35 @@
+/* ============================================================
+   S.OWL 디자인 토큰 — sowl-apply.html 시각 계승 (임의 변경 금지)
+   ============================================================ */
+:root {
+  --bg: #050608;
+  --bg-2: #080a0f;
+  --panel: rgba(255, 255, 255, 0.035);
+  --panel-2: rgba(255, 255, 255, 0.055);
+  --line: rgba(255, 255, 255, 0.1);
+  --line-2: rgba(255, 255, 255, 0.16);
+
+  --cyan: #22d3ee;
+  --cyan-hi: #67e8f9; /* 주색 */
+  --magenta: #f472d0;
+  --magenta-hi: #ff8ae2; /* 보조 */
+  --lime: #a3e635; /* 강조·성공 */
+  --violet: #a78bfa;
+  --danger: #fb7185;
+
+  --text: #e8eef7;
+  --muted: #9aa7b8;
+  --dim: #64748b;
+  --faint: #475569;
+
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --display: 'Space Grotesk', 'Inter', 'JetBrains Mono', system-ui, sans-serif; /* 큰 숫자 전용 */
+  --sans: 'Pretendard Variable', Pretendard, Inter, -apple-system, BlinkMacSystemFont,
+    'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;
+
+  --r-sm: 10px;
+  --r: 14px;
+  --r-lg: 20px;
+  --maxw: 1180px;
+  --nav-h: 70px;
+}
