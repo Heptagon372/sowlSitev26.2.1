@@ -79,10 +79,10 @@ export async function gitPush(message) {
   const remote = await sh('git remote get-url origin');
   if (remote.code !== 0) {
     if ((await sh('gh --version')).code !== 0) {
-      bad('GitHub 원격 저장소가 아직 없고, gh CLI도 설치되어 있지 않습니다.');
-      note(`설치:   winget install --id GitHub.cli`);
-      note(`로그인: gh auth login   (설치 후 새 터미널에서 한 번만)`);
-      note('그다음 다시 [g] 를 누르면 저장소 생성부터 업로드까지 자동으로 됩니다.');
+      bad('GitHub 원격 저장소가 아직 연결되지 않았습니다.');
+      note('① https://github.com/new 에서 저장소를 만들고 (이름 sowl-website · Private · README 없이)');
+      note('② 프로젝트 폴더에서:  git remote add origin https://github.com/<아이디>/sowl-website.git');
+      note('③ 다시 [g] 를 누르면 업로드됩니다. (gh CLI가 있다면 이 과정이 자동입니다)');
       return false;
     }
     if ((await sh('gh auth status')).code !== 0) {
