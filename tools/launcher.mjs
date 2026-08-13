@@ -199,6 +199,39 @@ async function waitHttp(url, timeoutMs) {
   throw new Error(`${url} 응답 없음 (${timeoutMs / 1000}s)`);
 }
 
+/* 포트가 열려 있어도 postgres가 복구(recovery) 중이면 접속을 거부한다.
+   배포판에 pg_isready가 없으므로 StartupMessage를 직접 보내 확인한다:
+   복구 중엔 'E' + 57P03(cannot connect now), 준비되면 'R'(인증 요구)이 온다. */
+function pgReady() {
+  return new Promise((resolve) => {
+    const s = net.connect({ port: 5432, host: '127.0.0.1' });
+    let settled = false;
+    const done = (v) => { if (!settled) { settled = true; s.destroy(); resolve(v); } };
+    s.once('error', () => done(false));
+    setTimeout(() => done(false), 1500);
+    s.once('connect', () => {
+      const params = 'user\0sowl\0database\0sowl\0\0';
+      const buf = Buffer.alloc(8 + params.length);
+      buf.writeInt32BE(buf.length, 0);
+      buf.writeInt32BE(196608, 4); // 프로토콜 3.0
+      buf.write(params, 8, 'latin1');
+      s.write(buf);
+      s.once('data', (d) => {
+        if (d[0] === 0x52 /* 'R' */) return done(true);
+        done(!d.toString('latin1').includes('57P03'));
+      });
+    });
+  });
+}
+async function waitPgReady(timeoutMs) {
+  const end = Date.now() + timeoutMs;
+  while (Date.now() < end) {
+    if (await pgReady()) return;
+    await sleep(700);
+  }
+  throw new Error(`PostgreSQL이 복구를 끝내지 못했습니다 (${timeoutMs / 1000}s)`);
+}
+
 /* ---------- 부팅 스텝 (스피너) ---------- */
 const FRAMES = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
 async function step(label, fn) {
@@ -244,8 +277,10 @@ function shutdown(code = 0) {
   shuttingDown = true;
   streaming = false;
   console.log(`\n  ${C.dim}종료하는 중... 부엉이가 둥지로 돌아갑니다 ${C.cyan}zZ${C.r}`);
-  for (const name of [...children.keys()]) killTree(name);
-  stopPostgres();
+  killTree('api');
+  killTree('web');
+  stopPostgres(); // postgres는 강제 킬 금지 — 정상 종료해야 다음 부팅 때 크래시 복구가 없다
+  for (const name of [...children.keys()]) killTree(name); // db 래퍼 등 잔여 프로세스 정리
   console.log(`  ${C.lime}✔${C.r} ${C.text}모든 서버 정지 완료${C.r}\n`);
   process.exit(code);
 }
@@ -403,9 +438,14 @@ async function main() {
 
     /* 5. DB 기동 */
     await step('PostgreSQL 16 기동', async () => {
-      if (await tcpOpen(5432)) { reused.add('db'); return ':5432 (재사용)'; }
+      if (await tcpOpen(5432)) {
+        await waitPgReady(120_000);
+        reused.add('db');
+        return ':5432 (재사용)';
+      }
       launch('db', 'node scripts/local-db.mjs', join(ROOT, 'apps', 'api'));
       await waitTcp(5432, 90_000);
+      await waitPgReady(120_000); // 지난번 강제 종료였다면 복구가 끝날 때까지 대기
       return ':5432';
     });
 
