@@ -42,13 +42,10 @@
 </head>
 <body>
 
-<!-- 잠든 부엉이가 눈을 뜨고, 그 눈 속으로 들어가면 네온 큐브 세계 (인트로 1회 → 루프 무한) -->
+<!-- 잠든 부엉이가 눈을 뜨고, 그 눈 속으로 들어가 디지털 세계가 된다 -->
 <div class="owlbg" aria-hidden="true">
-  <video class="owlbg__v owlbg__v--intro" id="owlIntro" muted playsinline preload="auto" poster="/assets/owl-awaken.jpg">
+  <video class="owlbg__v" id="owlVideo" muted playsinline preload="auto" poster="/assets/owl-awaken.jpg">
     <source src="/assets/owl-awaken.mp4" type="video/mp4" />
-  </video>
-  <video class="owlbg__v owlbg__v--loop" id="owlLoop" muted playsinline loop preload="auto">
-    <source src="/assets/owl-world-loop.mp4" type="video/mp4" />
   </video>
   <div class="owlbg__scrim"></div>
 </div>

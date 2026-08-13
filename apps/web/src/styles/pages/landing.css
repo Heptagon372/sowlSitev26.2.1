@@ -12,50 +12,47 @@
   overflow: hidden;
   opacity: var(--owlbg-fade);
 }
-/* 인트로와 루프를 같은 자리에 겹쳐 두고 교차 페이드로 넘긴다 */
 .owlbg__v {
-  position: absolute;
-  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   opacity: 0;
   /* 첫 프레임이 준비되기 전의 깜빡임을 막는다 */
-  transition: opacity 1.2s ease;
+  transition: opacity 1.4s ease;
 }
-.owlbg.is-ready .owlbg__v--intro {
+.owlbg.is-ready .owlbg__v {
   opacity: 1;
 }
-/* 코딩 세계 도착 — 인트로를 걷고 무한 루프로 넘어간다 */
-.owlbg.is-looping .owlbg__v--intro {
-  opacity: 0;
+/* 영상이 멈춘 뒤 — 정지 화면이 죽어 보이지 않게 아주 느리게만 밀어 준다 */
+.owlbg.is-settled .owlbg__v {
+  animation: owlbg-drift 46s ease-in-out infinite alternate;
 }
-.owlbg.is-looping .owlbg__v--loop {
-  opacity: 1;
+@keyframes owlbg-drift {
+  from {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.07) translate3d(-1.2%, -0.8%, 0);
+  }
 }
-
-/* 배경을 살려 두되 흰 글씨는 읽히게 — 가운데를 넓게 비우고 가장자리만 눌렀다 */
+@media (prefers-reduced-motion: reduce) {
+  .owlbg.is-settled .owlbg__v {
+    animation: none;
+  }
+}
+/* 흰 글씨가 어디에 놓여도 읽히도록 — 가운데는 열어 두고 가장자리·하단만 누른다 */
 .owlbg__scrim {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 82% 68% at 50% 42%, transparent 48%, rgba(5, 6, 8, 0.58) 100%),
+    radial-gradient(ellipse 76% 60% at 50% 40%, transparent 30%, rgba(5, 6, 8, 0.74) 100%),
     linear-gradient(
       180deg,
-      rgba(5, 6, 8, 0.32) 0%,
-      rgba(5, 6, 8, 0) 30%,
-      rgba(5, 6, 8, 0.3) 72%,
+      rgba(5, 6, 8, 0.58) 0%,
+      rgba(5, 6, 8, 0.12) 34%,
+      rgba(5, 6, 8, 0.62) 74%,
       var(--bg) 100%
     );
-}
-
-/* 스크림을 얇게 한 만큼 글씨 자체로 대비를 만든다 */
-.hero__title,
-.hero__tag,
-.hero .cd,
-.hero__meta,
-.scroll-hint {
-  text-shadow: 0 2px 20px rgba(5, 6, 8, 0.9), 0 1px 5px rgba(5, 6, 8, 0.75);
 }
 
 .hero__btns {
