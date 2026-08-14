@@ -38,6 +38,19 @@ export function mountOwlBackground(): void {
   // 재생 실패(자동재생 차단 등)해도 poster는 남으므로 배경은 비지 않는다
   video.addEventListener('error', () => root.classList.add('is-ready'), { once: true });
 
+  // 영상이 실제로 돌기 시작하면 히어로 등장 연출도 함께 시작한다 (landing.css .owl-live)
+  video.addEventListener(
+    'playing',
+    () => {
+      document.body.classList.add('owl-live');
+      // 연출(~4.8s)이 끝나면 클래스를 걷는다 — 애니메이션 끝 상태와 기본 상태가 같아
+      // 보통은 아무 변화가 없고, 애니메이션이 어떤 이유로든 못 돈 환경에서도
+      // 히어로가 영영 투명하게 남는 일만은 없다.
+      window.setTimeout(() => document.body.classList.remove('owl-live'), 6500);
+    },
+    { once: true },
+  );
+
   // 디지털 세계에 닿으면 멈춰서 그대로 배경이 된다 — 눈은 다시 감기지 않는다
   const settle = (): void => {
     if (root.classList.contains('is-settled')) return;
